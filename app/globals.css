@@ -1,0 +1,439 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+/* body {
+  font-family: Arial, Roboto, Helvetica, sans-serif;
+} */
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+.hero-container {
+  display: flex;
+  flex-direction: row;
+  height: auto !important;
+}
+
+@media (max-width: 640px) {
+  .hero-container {
+    height: 100% !important;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-container {
+    height: 100% !important;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 1rem;
+  overflow: auto;
+}
+
+/* Example of how you might style the Header & Sidebar */
+header {
+  background-color: #fff;
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Example sidebar styling */
+.sidebar {
+  /* If your Sidebar component has a className="sidebar" */
+  width: 250px;
+  background-color: #f7f7f7;
+  border-right: 1px solid #ddd;
+  padding: 1rem;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.curved-image {
+  transform: perspective(1000px) rotateY(-10deg) scale(1.05);
+  transition: transform 0.3s ease;
+  border-radius: 12px;
+}
+
+.curved-image:hover {
+  transform: perspective(1000px) rotateY(0deg) scale(1.1);
+}
+
+.rotate-left {
+  transform: perspective(1000px) rotateY(-10deg) scale(1.05);
+}
+
+.rotate-right {
+  transform: perspective(1000px) rotateY(10deg) scale(1.05);
+}
+
+.rotate-center {
+  transform: perspective(1000px) rotateY(0deg) scale(1.05);
+}
+
+@layer utilities {
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+.curved-image-wrapper {
+  overflow: hidden;
+}
+
+.custom-dashed-border {
+  border: 1.5px dashed #989898;
+  border-style: dashed;
+  border-width: 1.5px;
+  border-image:
+    repeating-linear-gradient(90deg, #989898 0 20px, transparent 20px 38px),
+    repeating-linear-gradient(180deg, #989898 0 20px, transparent 20px 38px);
+  border-image-slice: 1;
+  border-image-width: 1.5px;
+  border-image-repeat: round;
+}
+
+
+/* LandingPage.css */
+/* Container */
+.landing-container {
+  font-family: sans-serif;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* Hero Section */
+.hero-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 4rem 2rem;
+  gap: 2rem;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Email Form */
+.email-form {
+  display: flex;
+  align-items: center;
+}
+
+.input-group {
+  position: relative;
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.email-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.email-form input {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.email-form input:focus {
+  outline: none;
+  border-color: #0070f3;
+}
+
+.cta-button {
+  display: flex;
+  align-items: center;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cta-button:hover {
+  background-color: #005bb5;
+}
+
+.cta-button span {
+  margin-right: 0.5rem;
+}
+
+/* Hero Image */
+.hero-image {
+  text-align: center;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Features Section */
+.features-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 4rem 2rem;
+}
+
+.feature {
+  flex: 1 1 30%;
+  max-width: 300px;
+  margin: 1rem;
+  text-align: center;
+}
+
+.feature h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.feature p {
+  font-size: 0.95rem;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-image {
+    margin-top: 2rem;
+  }
+
+  .email-form {
+    flex-direction: column;
+  }
+
+  .input-group {
+    margin-right: 0;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .features-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .feature {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .cta-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+.maketime{
+  padding-top: 28px !important;
+  /* @media (max-width: 768px) {
+   
+    margin-top: 40px !important;
+   
+  } */
+}
+.sendcnt{
+  margin-top: 20px !important;
+ 
+}
+ .sendcnt button{
+  padding: 20px 50px;
+  border-radius: 10px !important;
+}
+#features{
+  .featurescolumn{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    .features-section{
+      padding: 8px 12px;
+    }
+    .featuresavailable{
+      padding: 8px 12px;
+      
+    }
+  }
+}
+@media (max-width: 768px) {
+  #features{
+    .featurescolumn{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+     .features-section{
+     margin: 10px 0;
+     display: flex;
+     flex-direction: row;
+    }
+  }
+ 
+}
+@media (max-width: 768px) {
+  .makeAbout{
+    height: 380px;
+    h6{
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  p{
+    font-size: 16px;
+  }
+  }
+ 
+}
+@media (max-width: 768px) {
+ #contact{
+  padding-bottom: 60px;
+ }
+  #howitworks{
+  padding: 20px 0;
+ }
+ #about{
+  padding: 20px 0;
+ }
+ #features{
+  padding: 20px 0;
+ }
+ .trust{
+  padding: 20px 0;
+ }
+}
