@@ -117,7 +117,6 @@ import AgentHeader from '@/components/Core/agent/AgentHeader';
 import { Switch } from '@/components/ui/switch';
 import { users } from '@/constants/localData/data';
 import { ChevronDown, InfoIcon, Search } from 'lucide-react';
-import Image from 'next/image';
 import React, { useRef, useState } from 'react';
 import { FaGoogleDrive, FaRegCalendarAlt, FaVideo } from 'react-icons/fa';
 

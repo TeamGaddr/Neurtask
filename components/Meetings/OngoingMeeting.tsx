@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /** @format */
 
 // /** @format */
@@ -56,7 +57,16 @@ const Spinner: React.FC<{ size?: number }> = ({ size = 16 }) => (
 const OngoingMeeting: React.FC = () => {
 	const [open, setOpen] = useState(false);
 	const [aiJoining, setAiJoining] = useState(false);
-	const [meetings, setMeetings] = useState<any[]>([]);
+	interface Meeting {
+		_id: string;
+		title?: string;
+		startDateTime?: string;
+		endDateTime?: string;
+		meetingLink?: string;
+		attendees?: string[];
+		calendarEventId?: number;
+	}
+	const [meetings, setMeetings] = useState<Meeting[]>([]);
 	const [loading, setLoading] = useState(false);
 
 	React.useEffect(() => {
@@ -77,6 +87,7 @@ const OngoingMeeting: React.FC = () => {
 				const arr = Array.isArray(json) ? json : json?.meetings ?? [];
 				setMeetings(arr);
 			} catch (err) {
+				console.log(err)
 				setMeetings([]);
 			} finally {
 				setLoading(false);
@@ -142,7 +153,7 @@ const OngoingMeeting: React.FC = () => {
 			});
 
 			// refresh cache silently
-			refresh(false).catch(() => { });
+			// refresh(false).catch(() => { });
 		} catch (err: any) {
 			toast({
 				variant: 'error',
@@ -169,7 +180,7 @@ const OngoingMeeting: React.FC = () => {
 			try {
 				window.open(meeting.meetingLink, '_blank', 'noopener,noreferrer');
 			} catch (err) {
-				// ignore
+				console.log(err)
 			}
 		} else {
 			// no meeting link - user still requested join; let backend try fallback
@@ -267,7 +278,7 @@ const OngoingMeeting: React.FC = () => {
 							id: ongoingMeeting._id,
 							title: ongoingMeeting.title,
 							meetingLink: ongoingMeeting.meetingLink,
-							calendarEventId: ongoingMeeting.calendarEventId,
+							calendarEventId: ongoingMeeting.calendarEventId != null ? String(ongoingMeeting.calendarEventId) : undefined,
 							startDateTime: ongoingMeeting.startDateTime,
 							endDateTime: ongoingMeeting.endDateTime,
 						}

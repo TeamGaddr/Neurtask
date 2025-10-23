@@ -42,7 +42,7 @@ const Summary = () => {
             {
                 !summaries || summaries?.length === 0 ? <p>There is no summary </p> :
                     <div>
-                        {summaries?.map((item, index) => {
+                        {summaries?.map((item) => {
                             return (
                                 <div key={item?.id}>
                                     <p>Date: {item.date}</p><br />

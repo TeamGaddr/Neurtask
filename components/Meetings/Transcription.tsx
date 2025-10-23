@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react'
 
 interface ITranscript {
@@ -40,6 +41,7 @@ const Transcription = () => {
     }, [])
 
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const deleteTranscription = async (id: any) => {
         const token = localStorage.getItem("token");
 
@@ -86,7 +88,7 @@ const Transcription = () => {
                                 <h2>{item.id}</h2>
                                 <h2>{item.date.slice(0, 10)}</h2>
 
-                                {item.transcript.map((transcriptions: any, index: number) => {
+                                {item.transcript.map((transcriptions, index: number) => {
                                     return (
                                         <div key={index}>
                                             <p>{transcriptions.text}</p>
