@@ -37,6 +37,7 @@ export default function PasswordRecoveryForm() {
 				throw new Error(err.message || 'Something went wrong');
 			}
 			setSuccess(true);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
 			setError(err.message || 'An error occurred');
 		} finally {

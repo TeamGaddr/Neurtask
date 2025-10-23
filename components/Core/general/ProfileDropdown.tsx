@@ -207,7 +207,7 @@
 'use client';
 
 import { useUserStore } from '@/lib/store/userStore';
-import { CreditCard, LogOut, Settings, Share } from 'lucide-react';
+import { LogOut, Settings, Share } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type React from 'react';
 import { useState } from 'react';

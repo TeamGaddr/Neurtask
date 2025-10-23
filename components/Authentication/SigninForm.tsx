@@ -194,7 +194,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 			}
 			popup = null;
 		} catch (err) {
-			// ignore
+			console.log(err)
 		}
     };
 
@@ -231,6 +231,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 
 		// Fallback
 		if (emailFallback) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			setUser({ email: emailFallback } as any);
 			toast({
 			variant: 'success',
@@ -331,7 +332,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 			});
 			}
 		} catch (err) {
-			// Cross-origin errors are expected, ignore them
+			console.log(err)
 		}
 		}, 500);
 	};

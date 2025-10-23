@@ -5,11 +5,9 @@
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
-type Props = {
-	apiBaseUrl?: string;
-};
 
-export default function GoogleSignInButton({ apiBaseUrl }: Props) {
+
+export default function GoogleSignInButton() {
 	const router = useRouter();
 	const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
@@ -31,7 +29,7 @@ export default function GoogleSignInButton({ apiBaseUrl }: Props) {
 					localStorage.setItem('user', JSON.stringify(user));
 				}
 			} catch (err) {
-				// ignore if /me doesn't exist
+				console.log(err)
 			}
 
 			router.push('/account/onboarding');

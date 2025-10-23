@@ -16,7 +16,7 @@ export default function LoginSuccessPage() {
 		try {
 			if (token) localStorage.setItem('token', token);
 		} catch (err) {
-			// ignore
+			console.log(err);
 		}
 
 		// Also set auth cookie for polling fallback
@@ -27,11 +27,14 @@ export default function LoginSuccessPage() {
 				document.cookie = `auth-token=${encodeURIComponent(
 					token
 				)}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
-			} catch (err) {}
+			} catch (err) {
+				console.log(err);
+			}
 		}
 
 		// Notify opener (popup flow)
 		try {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const payload: any = { type: 'google-auth', success: true };
 			if (token) payload.token = token;
 			if (email) payload.email = email;
@@ -39,14 +42,16 @@ export default function LoginSuccessPage() {
 				window.opener.postMessage(payload, '*');
 			}
 		} catch (err) {
-			// ignore
+			console.log(err);
 		}
 
 		// close popup after short delay to ensure message sent
 		setTimeout(() => {
 			try {
 				window.close();
-			} catch (err) {}
+			} catch (err) {
+				console.log(err);
+			}
 		}, 250);
 	}, [searchParams]);
 

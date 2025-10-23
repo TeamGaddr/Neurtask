@@ -4,16 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useUserStore } from '@/lib/store/userStore';
 import { format, isAfter, isToday, isTomorrow, parseISO } from 'date-fns';
-import { FileText, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
-interface Meeting {
-	id: string;
-	title: string;
-	startTime: string;
-	endTime: string;
-}
 
 interface GroupedMeetings {
 	day: string;
@@ -32,12 +25,7 @@ interface GroupedMeetings {
 // 	transcript: string;   // transcript text
 // };
 
-const TaskCard = ({ title, date }: { title: string; date: string }) => (
-	<Card className='bg-[#FBFAF9] p-4 space-y-1 rounded-lg'>
-		<h4 className='text-sm text-[#292929] font-normal'>{title}</h4>
-		<p className='text-xs text-[#7C7C7C]'>Estimated {date}</p>
-	</Card>
-);
+
 
 const UpcomingCard = ({ day, label, month, events }: GroupedMeetings) => (
 	<Card className='bg-white p-4 rounded-lg relative'>
@@ -95,6 +83,7 @@ export default function Dashboard() {
         });
         if (!res.ok) throw new Error('Failed to fetch meetings');
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data: any[] = await res.json();
         const now = new Date();
 
@@ -102,6 +91,7 @@ export default function Dashboard() {
           isAfter(parseISO(item.end.dateTime), now)
         );
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const temp: Record<string, any[]> = {};
         future.forEach((item) => {
           const dateKey = format(parseISO(item.start.dateTime), 'yyyy-MM-dd');

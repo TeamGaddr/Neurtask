@@ -3,8 +3,6 @@
 'use client';
 
 import AgentNavigationTabs from '@/components/Core/agent/AgentsNavTabs';
-// import AgentForm from '@/components/New Agent/agent-general/AgentForm';
-// import AgentForm from '@/components/New Agent/agent-general/agentForm';
 import AgentForm from '@/components/New Agent/agent-general/agentForm';
 import ModelSelection from '@/components/New Agent/agent-general/ModelSelection';
 import KnowledgeUI from '@/components/New Agent/agent-knowledge/knowledgeUi';
@@ -12,7 +10,6 @@ import PermissionUi from '@/components/New Agent/agent-permissions/permissionUi'
 import TaskUI from '@/components/New Agent/agent-tasks/taskUi';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 
@@ -33,7 +30,6 @@ const AgentSchema = z.object({
 type AgentCreateData = z.infer<typeof AgentSchema>;
 
 export default function Page() {
-	const router = useRouter();
 	const [currentStep, setCurrentStep] = useState(0);
 	const [data, setData] = useState<AgentCreateData>({
 		name: '',

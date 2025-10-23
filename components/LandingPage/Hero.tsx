@@ -10,6 +10,7 @@ import EmailPopup from '../Core/general/emailPopUp';
 
 export default function Home() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [_scrolled, setScrolled] = useState(false);
 
 	useEffect(() => {

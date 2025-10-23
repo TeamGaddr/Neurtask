@@ -66,6 +66,7 @@ export default function AgentsPage() {
 
 			const dataFromApi = await res.json();
 
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const mappedAgents = dataFromApi.map((agent: any) => ({
 				...agent,
 				id: agent._id,

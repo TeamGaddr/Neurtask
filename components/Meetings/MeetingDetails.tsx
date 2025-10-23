@@ -44,6 +44,7 @@ const MeetingDetails: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 				}
 				const json = await res.json();
 				if (!cancelled) setMeeting(json);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (err: any) {
 				if (!cancelled) setError(err.message || 'Failed to load meeting');
 			} finally {

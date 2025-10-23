@@ -2,7 +2,6 @@
 
 'use client';
 
-import GoogleSignInButton from '@/components/Authentication/OpenPopLogin';
 import LoginForm from '@/components/Authentication/SigninForm';
 
 import Image from 'next/image';

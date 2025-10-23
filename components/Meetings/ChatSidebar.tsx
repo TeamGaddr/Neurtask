@@ -141,6 +141,7 @@ const ChatSidebar: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 				if (!res.ok) throw new Error(`Status ${res.status}`);
 				const json = await res.json();
 				if (!cancelled) setMessages(json.messages ?? []);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (err: any) {
 				if (!cancelled) setError(err.message || 'Failed to load messages');
 			} finally {

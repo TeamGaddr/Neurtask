@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useRef } from "react";
 import SearchBar from "@/components/Setting/search";
 import Tabs from "@/components/Setting/tabs";
+import React, { useRef, useState } from "react";
 
 import General from "@/components/Setting/General";
-import Members from "@/components/Setting/Members";
+
 import Integrations from "@/components/Setting/Integrations";
-import EarlyAccess from "@/components/Setting/EarlyAccess";
+
 
 const SettingsPage = () => {
   const [selectedTab, setSelectedTab] = useState("General");

@@ -1,6 +1,6 @@
 
-import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
+import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -15,7 +15,8 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const { data: adminData, error: adminError } = await resend.emails.send({
+		const { error: adminError } = await resend.emails.send({
+		// const { data: adminData, error: adminError } = await resend.emails.send({
 			from: 'Early Access <onboarding@resend.dev>',
 			to: 'team@gaddr.com', 
 			subject: `🎉 New Early Access Subscriber: ${email}`,
@@ -67,7 +68,8 @@ export async function POST(request: NextRequest) {
 		}
 
 		// Send welcome email to subscriber
-		const { data: welcomeData, error: welcomeError } = await resend.emails.send({
+		const { error: welcomeError } = await resend.emails.send({
+		// const { data: welcomeData, error: welcomeError } = await resend.emails.send({
 			from: 'Neurtask <onboarding@resend.dev>',
 			to: email,
 			subject: 'Welcome to Neurtask Early Access! 🚀',
