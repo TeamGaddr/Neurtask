@@ -472,6 +472,11 @@ export default function MeetingCard({
 	const user = useUserStore((s) => s.user);
 	const userEmail = user?.email;
 	const router = useRouter();
+	const token = localStorage.getItem("token");
+
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+	}, [])
 
 	const fetchMeetings = async () => {
 		try {
@@ -479,7 +484,7 @@ export default function MeetingCard({
 			const res = await fetch(`${API_BASE}/api/meeting`, {
 				method: 'GET',
 				credentials: 'include',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 			});
 			if (!res.ok) throw new Error('Failed to fetch meetings');
 			const data = await res.json();
@@ -588,14 +593,14 @@ export default function MeetingCard({
 			prev.map((p) =>
 				p._id === meeting._id
 					? {
-							...p,
-							attendees: willAttend
-								? [...(p.attendees ?? []), { email: userEmail }]
-								: (p.attendees ?? []).filter(
-										(a) =>
-											(a.email ?? '').toLowerCase() !== userEmail.toLowerCase()
-								  ),
-					  }
+						...p,
+						attendees: willAttend
+							? [...(p.attendees ?? []), { email: userEmail }]
+							: (p.attendees ?? []).filter(
+								(a) =>
+									(a.email ?? '').toLowerCase() !== userEmail.toLowerCase()
+							),
+					}
 					: p
 			)
 		);
@@ -672,11 +677,10 @@ export default function MeetingCard({
 						handleClick();
 					}
 				}}
-				className={`flex items-center justify-between py-4 border-b last:border-b-0 rounded-md focus:outline-none ${
-					clickable
-						? 'cursor-pointer hover:shadow-sm focus:ring-2 focus:ring-primary'
-						: 'opacity-75 cursor-not-allowed'
-				}`}
+				className={`flex items-center justify-between py-4 border-b last:border-b-0 rounded-md focus:outline-none ${clickable
+					? 'cursor-pointer hover:shadow-sm focus:ring-2 focus:ring-primary'
+					: 'opacity-75 cursor-not-allowed'
+					}`}
 				aria-disabled={!clickable}>
 				<div className='flex items-center gap-4 min-w-0'>
 					<div className='w-20 h-20 bg-gray-200 rounded-md flex flex-col items-center justify-center text-sm font-medium text-gray-700 shadow-sm flex-shrink-0'>

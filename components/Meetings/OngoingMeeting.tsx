@@ -10,6 +10,7 @@ import { toast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import NoteTaker from './NoteTakerMeeting';
+import MeetingRecorder from './MeetingRecorder';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
 const TOKEN_KEY = 'token';
@@ -136,12 +137,12 @@ const OngoingMeeting: React.FC = () => {
 				title: 'AI joined',
 				description: json?.summary
 					? String(json.summary).slice(0, 140) +
-					  (String(json.summary).length > 140 ? '…' : '')
+					(String(json.summary).length > 140 ? '…' : '')
 					: 'AI joined the meeting',
 			});
 
 			// refresh cache silently
-			refresh(false).catch(() => {});
+			refresh(false).catch(() => { });
 		} catch (err: any) {
 			toast({
 				variant: 'error',
@@ -218,8 +219,8 @@ const OngoingMeeting: React.FC = () => {
 						{ongoingMeeting?.attendees?.length
 							? `Meeting with ${ongoingMeeting.attendees.join(', ')}`
 							: !ongoingMeeting && loading
-							? 'Checking meetings…'
-							: 'No attendees'}
+								? 'Checking meetings…'
+								: 'No attendees'}
 					</div>
 				</div>
 
@@ -230,11 +231,10 @@ const OngoingMeeting: React.FC = () => {
 						onClick={() => joinMeeting(ongoingMeeting)}
 						disabled={!ongoingMeeting || aiJoining}
 						aria-disabled={!ongoingMeeting || aiJoining}
-						className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm ${
-							ongoingMeeting && !aiJoining
-								? 'bg-[#dafd3c] hover:bg-[#c9ef2a] text-black'
-								: 'bg-[#f0f3d6] text-gray-500 cursor-not-allowed'
-						}`}
+						className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm ${ongoingMeeting && !aiJoining
+							? 'bg-[#dafd3c] hover:bg-[#c9ef2a] text-black'
+							: 'bg-[#f0f3d6] text-gray-500 cursor-not-allowed'
+							}`}
 						aria-live='polite'>
 						{aiJoining ? (
 							<>
@@ -244,6 +244,7 @@ const OngoingMeeting: React.FC = () => {
 							'Join Meeting'
 						)}
 					</Button>
+					{ongoingMeeting ? <MeetingRecorder /> : ""}
 
 					{/* Notetaker: dark pill */}
 					<Button
@@ -263,13 +264,13 @@ const OngoingMeeting: React.FC = () => {
 				initialMeeting={
 					ongoingMeeting
 						? {
-								id: ongoingMeeting._id,
-								title: ongoingMeeting.title,
-								meetingLink: ongoingMeeting.meetingLink,
-								calendarEventId: ongoingMeeting.calendarEventId,
-								startDateTime: ongoingMeeting.startDateTime,
-								endDateTime: ongoingMeeting.endDateTime,
-						  }
+							id: ongoingMeeting._id,
+							title: ongoingMeeting.title,
+							meetingLink: ongoingMeeting.meetingLink,
+							calendarEventId: ongoingMeeting.calendarEventId,
+							startDateTime: ongoingMeeting.startDateTime,
+							endDateTime: ongoingMeeting.endDateTime,
+						}
 						: undefined
 				}
 			/>
