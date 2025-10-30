@@ -44,7 +44,7 @@ const MeetingDetails: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 				}
 				const json = await res.json();
 				if (!cancelled) setMeeting(json);
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (err: any) {
 				if (!cancelled) setError(err.message || 'Failed to load meeting');
 			} finally {
@@ -58,7 +58,8 @@ const MeetingDetails: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 	}, [meetingId]);
 
 	if (!meetingId) {
-		return (
+		return
+		(
 			<div className='p-6 text-sm text-gray-500'>No meeting selected.</div>
 		);
 	}
@@ -93,9 +94,8 @@ const MeetingDetails: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 					)}
 
 					<div
-						className={`relative rounded-lg overflow-hidden transition-all duration-300 ${
-							showAudio ? 'w-full h-28' : 'w-[280px] h-[150px]'
-						}`}
+						className={`relative rounded-lg overflow-hidden transition-all duration-300 ${showAudio ? 'w-full h-28' : 'w-[280px] h-[150px]'
+							}`}
 						onClick={() => {
 							if (audioSrc) setShowAudio(true);
 						}}

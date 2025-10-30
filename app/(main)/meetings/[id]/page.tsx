@@ -1,195 +1,129 @@
-/** @format */
-
-// /** @format */
-
-// // /** @format */
-
-// // // app/meetings/[id]/page.tsx  (Next.js 13+ app router)
-// // import ChatSidebar from '@/components/Meetings/ChatSidebar';
-// // import MeetingDetails from '@/components/Meetings/MeetingDetails';
-// // import React from 'react';
-
-// // interface Props {
-// // 	params: { id: string };
-// // }
-
-// // export default async function MeetingDetailsPage({ params }: Props) {
-// // 	const { id } = params;
-// // 	// Optionally fetch meeting server-side here using id
-// // 	// const meeting = await fetch(`${API_BASE}/api/meeting/${id}`, { ... });
-
-// // 	return (
-// // 		<div className='p-6'>
-// // 			{/* If MeetingDetails expects the full meeting object, fetch and pass it in.
-// //           Otherwise you can just render the component and let it fetch by id. */}
-// // 			<MeetingDetails meetingId={id} />
-// // 			<div className='w-full lg:w-1/3 space-y-4'>
-// // 				<ChatSidebar />
-// // 			</div>
-// // 		</div>
-// // 	);
-// // }
-
-// /** @format */
-
-// // /** @format */
-
-// // 'use client';
-// // import React, { useState } from 'react';
-
-// // // import React from 'react';
-// // import ChatSidebar from '@/components/Meetings/ChatSidebar';
-// // import MeetingCard from '@/components/Meetings/MeetingCard';
-// // import MeetingDetails from '@/components/Meetings/MeetingDetails';
-// // import MeetingFilter from '@/components/Meetings/MeetingFilter';
-// // import MeetingHeader from '@/components/Meetings/MeetingHeader';
-// // import OngoingMeeting from '@/components/Meetings/OngoingMeeting';
-// // import Image from 'next/image';
-
-// // const Meetings = () => {
-// // 	const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
-// // 	return (
-// // 		<div className='p-4 space-y-8'>
-// // 			{/* Header */}
-// // 			<MeetingHeader />
-
-// // 			{/* Filter + Search (only show search when date selected) */}
-// // 			<div className='flex flex-col lg:flex-row justify-between lg:items-center space-y-4 lg:space-y-0'>
-// // 				<MeetingFilter onDateChange={setSelectedDate} />
-// // 				{selectedDate && (
-// // 					<div className='w-full lg:w-1/3 space-y-4 pl-20'>
-// // 						<div className='relative w-full'>
-// // 							<Image
-// // 								src='/search.png'
-// // 								alt='Search icon'
-// // 								className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4'
-// // 							/>
-// // 							<input
-// // 								type='text'
-// // 								placeholder='Search in chat'
-// // 								className='w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary'
-// // 							/>
-// // 						</div>
-// // 					</div>
-// // 				)}
-// // 			</div>
-
-// // 			{/* OngoingMeeting stays in all cases */}
-// // 			<div className='flex flex-col mx-[2.5rem] lg:flex-row space-y-8 lg:space-y-0 '>
-// // 				<div className={`flex-1 space-y-8 ${selectedDate ? 'lg:w-2/3' : ''}`}>
-// // 					<OngoingMeeting />
-// // 					{!selectedDate && <MeetingCard />}
-// // 					{selectedDate && <MeetingDetails />}
-// // 				</div>
-
-// // 				{/* Chat appears only after date is selected */}
-// // 				{selectedDate && (
-// // 					<div className='w-full lg:w-1/3 space-y-4'>
-// // 						<ChatSidebar />
-// // 					</div>
-// // 				)}
-// // 			</div>
-// // 		</div>
-// // 	);
-// // };
-
-// // export default Meetings;
-
-// /** @format */
-
-// 'use client';
-// import React, { useState } from 'react';
-
-// import ChatSidebar from '@/components/Meetings/ChatSidebar';
-// import MeetingDetails from '@/components/Meetings/MeetingDetails';
-// import MeetingHeader from '@/components/Meetings/MeetingHeader';
-// import OngoingMeeting from '@/components/Meetings/OngoingMeeting';
-// import Image from 'next/image';
-
-// const Meetings = () => {
-// 	return (
-// 		<div className='p-4 space-y-8'>
-// 			<MeetingHeader />
-
-// 			<div className='flex flex-col lg:flex-row justify-end lg:items-center space-y-4 lg:space-y-0'>
-// 				{/* <MeetingFilter /> */}
-// 				<div className='w-full lg:w-[27%] pr-9 space-y-4'>
-// 					<div className='relative'>
-// 						<Image
-// 							src='/search.png'
-// 							alt='Search icon'
-// 							width={4}
-// 							height={4}
-// 							className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4'
-// 						/>
-// 						<input
-// 							type='text'
-// 							placeholder='Search in chat'
-// 							className='w-full border bg-[#FBFAF9] border-[#ECEBEB] rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary'
-// 						/>
-// 					</div>
-// 				</div>
-// 			</div>
-
-// 			<div className='flex flex-col mx-[2.5rem] lg:flex-row space-y-8 lg:space-y-0 '>
-// 				<div className={`flex-1 space-y-8 lg:w-2/3`}>
-// 					<OngoingMeeting />
-// 					{/* pass the click handler down */}
-// 					<MeetingDetails />
-// 				</div>
-
-// 				<div className='w-full lg:w-1/3 space-y-4 flex justify-end'>
-// 					<ChatSidebar />
-// 				</div>
-// 			</div>
-// 		</div>
-// 	);
-// };
-
-// export default Meetings;
-
-// app/meetings/[id]/page.tsx
 'use client';
-import ChatSidebar from '@/components/Meetings/ChatSidebar';
+
 import MeetingDetails from '@/components/Meetings/MeetingDetails';
 import MeetingHeader from '@/components/Meetings/MeetingHeader';
 import OngoingMeeting from '@/components/Meetings/OngoingMeeting';
-import React from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-interface Props {
-	params: { id: string };
+interface ISummaryByID {
+	summary: string,
+	date: string
 }
 
-export default function MeetingPage({ params }: Props) {
-	const { id } = params;
+interface ITranscriptById {
+	id: string
+	date: string
+	transcript: {
+		text: string
+	}[]
+}
+
+export default function MeetingPage() {
+	const router = useRouter();
+	const [summary, setSummary] = useState<ISummaryByID | null>(null);
+	const [transcript, setTranscript] = useState<ITranscriptById | null>(null);
+	const { id } = useParams()
+	console.log(id)
+	useEffect(() => {
+		const getSummary = async () => {
+			if (!id) {
+				return
+			}
+
+			try {
+				const token = localStorage.getItem('token');
+				const response = await fetch(`http://localhost:3001/api/summary/${id}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				})
+
+				const summary = await response.json()
+				setSummary(summary)
+			} catch (error) {
+
+			}
+		}
+
+		getSummary()
+
+	}, []);
+
+	console.log()
+
+	useEffect(() => {
+		const getTranscriptById = async () => {
+			try {
+				if (!id) {
+					return
+				}
+				const token = localStorage.getItem('token');
+				const response = await fetch(`http://localhost:3001/api/transcript/${id}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				})
+
+				const transcript = await response.json()
+				setTranscript(transcript)
+			}
+			catch (error) {
+
+			}
+		}
+		getTranscriptById()
+	}, [])
+
+	if (!summary || !transcript) return <div>This summary and transcription is not available.</div>;
+
 
 	return (
-		<div className='p-6 space-y-8'>
-			<MeetingHeader />
+		<div>
+			<div className='p-6 space-y-8'>
+				<MeetingHeader />
 
-			<div className='flex gap-8'>
-				<div className='flex-1 max-w-3xl space-y-8'>
-					<OngoingMeeting />
-					<MeetingDetails meetingId={id} />
+				<div className='flex gap-8'>
+					<div className='flex-1 max-w-5xl space-y-8'>
+						<OngoingMeeting />
+						<MeetingDetails />
+					</div>
 				</div>
+			</div>
+			<section className="p-8 md:p-12 min-h-screen">
 
-				<aside className='w-80'>
-					{/* Search box */}
-					<div className='mb-4'>
-						<div className='relative'>
-							<input
-								type='text'
-								placeholder='Search in chat'
-								className='w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary'
-								aria-label='Search in chat'
-							/>
-						</div>
+
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-20">
+
+					<div className="md:col-span-2  p-6 md:p-8 rounded-xl  ">
+
+						<h2>Summary</h2>
+						<p className="text-gray-700 leading-relaxed mb-4">
+							{summary?.summary}
+						</p>
+
+						<span className="text-sm font-medium text-black-500">
+							Date: {summary?.date.slice(0, 10)}
+						</span>
 					</div>
 
-					<ChatSidebar meetingId={id} />
-				</aside>
-			</div>
+					<div className="md:w-[60%] g-gray p-6 md:p-9 rounded-3xl border border-gray-200">
+
+
+						<div className="space-y-6 max-h-[70vh] overflow-y-auto pr-2 max-w-[30vh]">
+							<h2>Transcription</h2>
+							{transcript && Array.isArray(transcript.transcript) && transcript.transcript.map((item: any, index: any) => {
+								return (
+									<div key={index} className="">
+										<p className="text-gray-800 leading-normal">
+											{item.text}
+										</p>
+										<h2 className="text-2xl font-bold text-indigo-600 mb-4 border-b pb-2">
+
+										</h2>
+									</div>
+								)
+							})}
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 }

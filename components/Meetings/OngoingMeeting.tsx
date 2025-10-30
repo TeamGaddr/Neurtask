@@ -66,7 +66,7 @@ const OngoingMeeting: React.FC = () => {
 		attendees?: string[];
 		calendarEventId?: number;
 	}
-	const [meetings, setMeetings] = useState<Meeting[]>([]);
+	const [meetings, setMeetings] = useState<any[]>([]);
 	const [loading, setLoading] = useState(false);
 
 	React.useEffect(() => {
@@ -255,7 +255,7 @@ const OngoingMeeting: React.FC = () => {
 							'Join Meeting'
 						)}
 					</Button>
-					{ongoingMeeting ? <MeetingRecorder /> : ""}
+					{ongoingMeeting ? <MeetingRecorder meetingId={ongoingMeeting.meetingId} /> : ""}
 
 					{/* Notetaker: dark pill */}
 					<Button
