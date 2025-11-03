@@ -28,18 +28,6 @@ const Navbar = ({transparent = false}: {transparent?: boolean}) => {
 		setMobileMenuOpen(!mobileMenuOpen);
 	};
 
-	const navVariants = {
-		hidden: { opacity: 0, y: -20 },
-		visible: {
-			opacity: 1,
-			y: 0,
-			transition: {
-				duration: 0.5,
-				ease: 'easeInOut',
-			},
-		},
-	};
-
 	const mobileMenuVariants = {
 		closed: {
 			opacity: 0,
@@ -72,7 +60,6 @@ const Navbar = ({transparent = false}: {transparent?: boolean}) => {
 		<motion.header
 			initial='hidden'
 			animate='visible'
-			variants={navVariants}
 			className={`z-50 transition-all duration-300 ${getNavbarClasses()}`}>
 			<div className='container mx-auto px-4 md:px-6'>
 				<div className='flex justify-between items-center'>
