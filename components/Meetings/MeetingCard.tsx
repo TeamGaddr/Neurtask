@@ -92,11 +92,15 @@ export default function MeetingCard({
 	const user = useUserStore((s) => s.user);
 	const userEmail = user?.email;
 	const router = useRouter();
-	const token = localStorage.getItem('token');
+	// const token = localStorage.getItem('token');
+	const [token, setToken] = useState<string | null>(null);
 
-	// useEffect(() => {
-	// 	const token = localStorage.getItem('token');
-	// }, []);
+	useEffect(() => {
+       if (typeof window !== 'undefined') {
+           const storedToken = localStorage.getItem('token');
+          setToken(storedToken);
+       }
+  	}, []);
 
 	const fetchMeetings = async () => {
 		try {
