@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { Mic, MicOff } from 'lucide-react';
 import React, { useRef, useState } from "react";
+import { Mic, MicOff } from 'lucide-react';
 
-export default function MeetingRecorder() {
+export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const chunksRef = useRef<Blob[]>([]);
     const [recording, setRecording] = useState(false);
@@ -13,6 +12,7 @@ export default function MeetingRecorder() {
     const token = localStorage.getItem("token");
     const [micMuted, setMicMuted] = useState(false);
     const micStreamRef = useRef<MediaStream | null>(null);
+    // const [meetingId, setMeetingId] = useState<string | null>(null)
 
 
 
@@ -89,6 +89,7 @@ export default function MeetingRecorder() {
             const filename = `recording_${Date.now()}.webm`;
             form.append("file", audioBlob, filename);
             form.append("filename", filename);
+            form.append("meetingId", meetingId);
 
             const res = await fetch("http://localhost:3001/api/meetings/stop-recording", {
                 headers: {
@@ -132,7 +133,7 @@ export default function MeetingRecorder() {
                     </button>
                 )}
                 {recording && (
-                    <div>
+                    <div className="flex items-center gap-3">
                         <button
                             onClick={stop}
                             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
@@ -145,6 +146,6 @@ export default function MeetingRecorder() {
 
                 )}
             </div>
-        </div>
+        </div >
     );
 }

@@ -85,7 +85,7 @@ const Meetings = () => {
 	// handler that navigates to the details page for a meeting
 	const handleMeetingClick = (meeting: { _id?: string }) => {
 		if (!meeting?._id) return;
-		router.push(`/meetings/${encodeURIComponent(meeting._id)}`);
+		router.push(`/Meetings/${encodeURIComponent(meeting._id)}`);
 	};
 
 	return (
