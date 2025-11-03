@@ -1,7 +1,8 @@
-import React, { useImperativeHandle, forwardRef, useState } from "react"
-// THIs IS A STATIC PAGE
+// THIS IS A STATIC PAGE FOR NOW
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 
 const Members = forwardRef((props, ref) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [teamMembers, setTeamMembers] = useState([
     { name: "Tom", role: "Finance Manager", created: "4 weeks ago", lastActive: "Today" },
     { name: "Sal", role: "Sales Director", created: "4 weeks ago", lastActive: "Today" },
@@ -76,5 +77,7 @@ const Members = forwardRef((props, ref) => {
     </div>
   );
 });
+
+Members.displayName = 'Members';
 
 export default Members;

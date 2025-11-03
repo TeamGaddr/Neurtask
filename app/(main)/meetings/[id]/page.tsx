@@ -3,9 +3,10 @@
 import MeetingDetails from '@/components/Meetings/MeetingDetails';
 import MeetingHeader from '@/components/Meetings/MeetingHeader';
 import OngoingMeeting from '@/components/Meetings/OngoingMeeting';
-import { useParams, useRouter } from 'next/navigation';
+import { toast } from '@/hooks/use-toast';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Search } from 'lucide-react';
+
 
 interface ISummaryByID {
 	summary: string,
@@ -22,13 +23,11 @@ interface ITranscriptById {
 }
 
 export default function MeetingPage() {
-	const router = useRouter();
 	const [summary, setSummary] = useState<ISummaryByID | null>(null);
 	const [transcript, setTranscript] = useState<ITranscriptById | null>(null);
 	const { id } = useParams()
 	const [searchQuery, setSearchQuery] = useState('');
 
-	console.log(id)
 	useEffect(() => {
 		const getSummary = async () => {
 			if (!id) {
@@ -44,7 +43,11 @@ export default function MeetingPage() {
 				const summary = await response.json()
 				setSummary(summary)
 			} catch (error) {
-
+				toast({
+                title: 'Events fetch failed',
+                description: String(error),
+				variant: 'error',
+				});
 			}
 		}
 
@@ -69,7 +72,11 @@ export default function MeetingPage() {
 				setTranscript(transcript)
 			}
 			catch (error) {
-
+			toast({
+                title: 'Events fetch failed',
+                description: String(error),
+				variant: 'error',
+				});
 			}
 		}
 		getTranscriptById()

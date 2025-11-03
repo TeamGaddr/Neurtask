@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -101,30 +102,6 @@ const setAppToken = (token: string): void => {
 	}
 };
 
-const Spinner: React.FC<{ size?: number }> = ({ size = 18 }) => (
-	<svg
-		className='animate-spin'
-		width={size}
-		height={size}
-		viewBox='0 0 24 24'
-		fill='none'
-		aria-hidden>
-		<circle
-			cx='12'
-			cy='12'
-			r='10'
-			stroke='currentColor'
-			strokeWidth='4'
-			opacity='0.2'
-		/>
-		<path
-			d='M22 12a10 10 0 00-10-10'
-			stroke='currentColor'
-			strokeWidth='4'
-			strokeLinecap='round'
-		/>
-	</svg>
-);
 
 const SkeletonRow: React.FC<{ className?: string }> = ({ className = '' }) => (
 	<div className={`h-5 rounded-md bg-slate-200 animate-pulse ${className}`} />
@@ -141,7 +118,7 @@ const combineDateAndTime = (date: Date | undefined, time: string): string | null
 	return combined.toISOString();
 };
 
-const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange, initialMeeting }) => {
+const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	
@@ -256,7 +233,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange, initialMeeting }) =
 							continue;
 						}
 						const json = await res.json();
-						let items: any[] = [];
+						let items = [];
 						if (Array.isArray(json)) items = json;
 						else if (Array.isArray(json?.events)) items = json.events;
 						else if (Array.isArray(json?.items)) items = json.items;
@@ -278,6 +255,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange, initialMeeting }) =
 						lastFetchErrorRef.current = null;
 						break;
 					} catch (err) {
+						console.log(err)
 						continue;
 					}
 				}
@@ -288,8 +266,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange, initialMeeting }) =
 				attempt += 1;
 				if (attempt >= MAX_FETCH_ATTEMPTS) {
 					console.error('[NoteTaker] all event fetch attempts failed', err);
-					lastFetchErrorRef.current =
-						(err && (err as any).message) || 'Failed to fetch calendar events';
+					lastFetchErrorRef.current = 'Failed to fetch calendar events';
 					setEvents([]);
 					if (manual) {
 						toast({
@@ -545,7 +522,11 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange, initialMeeting }) =
 								variant: 'success',
 							});
 						} catch {
-							/* ignore */
+							toast({
+								title: 'Faild to copy',
+								description: 'Meeting link failed to copy.',
+								variant: 'error',
+							});
 						}
 					}
 
@@ -601,6 +582,32 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange, initialMeeting }) =
 					</div>
 
 					<div className='mx-auto max-w-sm'>
+						{/* Title */}
+						<div className='mb-5'>
+							<label
+								className='block text-sm text-gray-700 mb-2'
+								style={{ fontWeight: 400, fontSize: '13px' }}>
+								Title (Optional)
+							</label>
+							<Input
+								type='text'
+								value={title}
+								onChange={(e) => setTitle(e.target.value)}
+								className='w-full px-3 py-2 rounded-xl focus:outline-none'
+								placeholder=''
+								style={{
+									backgroundColor: INPUT_BG,
+									border: `1px solid ${INPUT_BORDER}`,
+									color: INPUT_TEXT_COLOR,
+									fontWeight: 400,
+									fontSize: '13px',
+									borderRadius: 10,
+								}}
+								disabled={loading}
+								aria-label='Title'
+							/>
+						</div>
+
 						{/* Start Date & Time */}
 						<div className='mb-5'>
 							<DateTimePicker
@@ -666,7 +673,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange, initialMeeting }) =
 									{!eventsLoading && events.length === 0 ? (
 										<div className='mb-3 p-3 rounded-md bg-yellow-50 border border-yellow-200'>
 											<p className='text-sm text-yellow-800'>
-												You don't have any calendar events. You can still create
+												You don&apos;t have any calendar events. You can still create
 												a meeting manually below.
 											</p>
 										</div>
@@ -831,6 +838,12 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange, initialMeeting }) =
 								)
 							)}
 						</div>
+
+						{googleConnected && googleEmail && (
+							<div className='mb-5 text-sm text-gray-600'>
+								Connected as: {googleEmail}
+							</div>
+						)}
 
 						{/* Notetaker toggle */}
 						<div className='flex items-center justify-between border border-gray-200 rounded-xl p-4 bg-white'>

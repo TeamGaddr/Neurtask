@@ -1,6 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import ProfileEdit from "./ProfileEdit";
-import WorkspaceEdit from "./WorkspaceEdit";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
@@ -15,6 +14,7 @@ const General = forwardRef((props, ref) => {
   });
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [workspaceLogo, setWorkspaceLogo] = useState<File | null>(null);
   const [message, setMessage] = useState("");
 
@@ -89,5 +89,7 @@ const General = forwardRef((props, ref) => {
     </div>
   );
 });
+
+General.displayName = 'General';
 
 export default General;

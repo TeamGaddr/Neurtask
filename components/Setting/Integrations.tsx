@@ -1,3 +1,4 @@
+import { toast } from '@/hooks/use-toast';
 import axios from 'axios';
 import React, {
 	forwardRef,
@@ -32,7 +33,6 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 	const token =
 		typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-	// 1) On mount, fetch current flags from your API
 	useEffect(() => {
 		//THIS ENDPOINT IS 404 
 		axios
@@ -45,13 +45,15 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 				setGoogleCalendar(data.calendar);
 			})
 			.catch(() => {
-				/* ignore or setError */
+				toast({
+								title: 'Something went wrong',
+								description: 'please try again',
+								variant: 'error',
+							});
 			});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// 2) Handle the frontend success redirect: /integrations/success?service=calendar
-	// Backend should redirect here after exchanging the code server-side.
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
 		const service = params.get('service') as keyof IntegrationsResponse | null;
@@ -60,8 +62,6 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 		);
 
 		if (isSuccessPath && service) {
-			// Optimistically enable the integration for immediate feedback,
-			// then sync to backend via updateIntegrations.
 			const newState: IntegrationsResponse = {
 				googlemeet,
 				googledrive,
@@ -73,17 +73,16 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 			setGoogleDrive(newState.googledrive);
 			setGoogleCalendar(newState.calendar);
 
-			// attempt to persist the new state
+			
 			updateIntegrations(newState);
 
-			// remove query params so reloading won't re-run this
+			
 			window.history.replaceState({}, '', window.location.pathname);
 		}
-		// we intentionally don't include google* in deps to only run once on mount
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Initiate OAuth through your backend (backend will redirect to Google)
+	
 	const handleGoogleAuth = (service: keyof IntegrationsResponse) => {
 		window.location.href = `${API_BASE}/api/auth/google?service=${encodeURIComponent(
 			service
@@ -92,11 +91,10 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 
 	// Toggle handler
 	const handleToggle = (key: keyof IntegrationsResponse) => {
-		// If currently disabled, kick off the OAuth flow via backend
-		if (!({ googlemeet, googledrive, calendar } as any)[key]) {
+		
+		if (!({ googlemeet, googledrive, calendar })[key]) {
 			handleGoogleAuth(key);
 		} else {
-			// Turn it OFF locally and persist
 			const newState: IntegrationsResponse = {
 				googlemeet,
 				googledrive,
@@ -175,5 +173,7 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 		</>
 	);
 });
+
+Integrations.displayName = 'Integrations';
 
 export default Integrations;

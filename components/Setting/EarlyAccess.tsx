@@ -1,10 +1,10 @@
+
+
 /**
  * eslint-disable @typescript-eslint/ban-ts-comment
  *
  * @format
  */
-
-// @ts-nocheck
 
 import { Check } from 'lucide-react';
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
@@ -42,7 +42,7 @@ const EarlyAccess = forwardRef((props, ref) => {
 		},
 	]);
 
-	const toggleComplete = (index) => {
+	const toggleComplete = (index: number) => {
 		setTasks((prev) =>
 			prev.map((task, i) =>
 				i === index
@@ -203,5 +203,7 @@ const EarlyAccess = forwardRef((props, ref) => {
 		</div>
 	);
 });
+
+EarlyAccess.displayName = 'EarlyAccess';
 
 export default EarlyAccess;
