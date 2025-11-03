@@ -5,6 +5,7 @@ import MeetingHeader from '@/components/Meetings/MeetingHeader';
 import OngoingMeeting from '@/components/Meetings/OngoingMeeting';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Search } from 'lucide-react';
 
 interface ISummaryByID {
 	summary: string,
@@ -16,6 +17,7 @@ interface ITranscriptById {
 	date: string
 	transcript: {
 		text: string
+		startTime: number
 	}[]
 }
 
@@ -24,6 +26,8 @@ export default function MeetingPage() {
 	const [summary, setSummary] = useState<ISummaryByID | null>(null);
 	const [transcript, setTranscript] = useState<ITranscriptById | null>(null);
 	const { id } = useParams()
+	const [searchQuery, setSearchQuery] = useState('');
+
 	console.log(id)
 	useEffect(() => {
 		const getSummary = async () => {
@@ -72,26 +76,25 @@ export default function MeetingPage() {
 	}, [])
 
 	if (!summary || !transcript) return <div>This summary and transcription is not available.</div>;
+	const searchInTranscript = transcript.transcript.filter((item) =>
+		item.text.toLowerCase().includes(searchQuery.toLowerCase())
+	);
 
 
 	return (
-		<div>
-			<div className='p-6 space-y-8'>
-				<MeetingHeader />
+		<section className='flex flex-col md:flex-row gap-8 p-6'>
+			<section className='p-6 space-y-8'>
+				<div className='p-6 space-y-8'>
+					<MeetingHeader />
 
-				<div className='flex gap-8'>
-					<div className='flex-1 max-w-5xl space-y-8'>
-						<OngoingMeeting />
-						<MeetingDetails />
+					<div className='flex gap-8'>
+						<div className='flex-1 max-w-5xl space-y-8'>
+							<OngoingMeeting />
+							<MeetingDetails />
+						</div>
 					</div>
-				</div>
-			</div>
-			<section className="p-8 md:p-12 min-h-screen">
 
-
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-20">
-
-					<div className="md:col-span-2  p-6 md:p-8 rounded-xl  ">
+					<div className="md:col-span-1  p-6 md:p-10 rounded-xl  ">
 
 						<h2>Summary</h2>
 						<p className="text-gray-700 leading-relaxed mb-4">
@@ -103,27 +106,45 @@ export default function MeetingPage() {
 						</span>
 					</div>
 
-					<div className="md:w-[60%] g-gray p-6 md:p-9 rounded-3xl border border-gray-200">
-
-
-						<div className="space-y-6 max-h-[70vh] overflow-y-auto pr-2 max-w-[30vh]">
-							<h2>Transcription</h2>
-							{transcript && Array.isArray(transcript.transcript) && transcript.transcript.map((item: any, index: any) => {
-								return (
-									<div key={index} className="">
-										<p className="text-gray-800 leading-normal">
-											{item.text}
-										</p>
-										<h2 className="text-2xl font-bold text-indigo-600 mb-4 border-b pb-2">
-
-										</h2>
-									</div>
-								)
-							})}
-						</div>
-					</div>
 				</div>
 			</section>
-		</div>
+
+
+
+			<aside className='md:w-1/3 p-6'>
+				<form
+					onSubmit={(e) => e.preventDefault()}
+				>
+
+					<label >
+						<input
+							id="search"
+							type="text"
+							placeholder="Search in chat"
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							className="w-[96%] border border-gray-300 rounded-md px-3 py-2 mr-4 mb-5 focus:outline-none focus:ring focus:ring-indigo-200"
+						/>
+					</label>
+				</form>
+
+				<div className='p-6 bg-gray border border-gray-200 rounded-xl shadow-sm max-h-[90vh] w-[15vw] overflow-y-auto'>
+
+
+					<h2>Transcription</h2>
+					{searchInTranscript.length > 0 ? (
+						searchInTranscript.map((item, index) => (
+							<div key={index} className="mb-3">
+								<p className="text-gray-800 leading-normal">{item.text}</p>
+								<h2 className="text-2xl font-bold text-indigo-600 mb-4 border-b pb-2"></h2>
+							</div>
+						))
+					) : (
+						<p className="text-gray-500 italic mt-4">No matches found.</p>
+					)}
+				</div>
+			</aside>
+
+		</section>
 	);
 }
