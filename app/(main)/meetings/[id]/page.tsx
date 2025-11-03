@@ -83,9 +83,11 @@ export default function MeetingPage() {
 	}, [])
 
 	if (!summary || !transcript) return <div>This summary and transcription is not available.</div>;
+
 	const searchInTranscript = transcript.transcript.filter((item) =>
 		item.text.toLowerCase().includes(searchQuery.toLowerCase())
 	);
+
 
 
 	return (
@@ -103,7 +105,6 @@ export default function MeetingPage() {
 
 					<div className="md:col-span-1  p-6 md:p-10 rounded-xl  ">
 
-						<h2>Summary</h2>
 						<p className="text-gray-700 leading-relaxed mb-4">
 							{summary?.summary}
 						</p>
@@ -138,14 +139,17 @@ export default function MeetingPage() {
 				<div className='p-6 bg-gray border border-gray-200 rounded-xl shadow-sm max-h-[90vh] w-[15vw] overflow-y-auto'>
 
 
-					<h2>Transcription</h2>
 					{searchInTranscript.length > 0 ? (
-						searchInTranscript.map((item, index) => (
-							<div key={index} className="mb-3">
-								<p className="text-gray-800 leading-normal">{item.text}</p>
-								<h2 className="text-2xl font-bold text-indigo-600 mb-4 border-b pb-2"></h2>
-							</div>
-						))
+						searchInTranscript.map((item, index) => {
+							return (
+								<div key={index} className="mb-3">
+									{item.startTime && <span>{item.startTime.toFixed(2)}</span>}
+									<p className="text-gray-800 leading-normal">{item.text}</p>
+									<h2 className="text-2xl font-bold text-indigo-600 mb-4 border-b pb-2"></h2>
+								</div>
+							)
+
+						})
 					) : (
 						<p className="text-gray-500 italic mt-4">No matches found.</p>
 					)}

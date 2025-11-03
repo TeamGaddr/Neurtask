@@ -92,7 +92,7 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
             form.append("filename", filename);
             form.append("meetingId", meetingId);
 
-            const res = await fetch("http://localhost:3001/api/meetings/stop-recording", {
+            const res = await fetch("http://localhost:3001/api/recordmeetings/stop-recording", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
