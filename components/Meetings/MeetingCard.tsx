@@ -92,11 +92,13 @@ export default function MeetingCard({
 	const user = useUserStore((s) => s.user);
 	const userEmail = user?.email;
 	const router = useRouter();
-	const token = localStorage.getItem('token');
+	const [token, setToken] = useState<string | null>(null)
+	// const token = localStorage.getItem('token');
 
-	// useEffect(() => {
-	// 	const token = localStorage.getItem('token');
-	// }, []);
+	useEffect(() => {
+		const storedToken = localStorage.getItem("token");
+		setToken(storedToken)
+	}, [])
 
 	const fetchMeetings = async () => {
 		try {
@@ -112,7 +114,7 @@ export default function MeetingCard({
 			if (!res.ok) throw new Error('Failed to fetch meetings');
 			const data = await res.json();
 			const normalized = (Array.isArray(data) ? data : []).map((m) => ({
-				_id: m._id,
+				_id: m._id ?? m.meetingId,
 				title: m.title ?? m.name ?? 'Untitled meeting',
 				startDate: m.startDate,
 				endDate: m.endDate,
@@ -143,10 +145,11 @@ export default function MeetingCard({
 	};
 
 	useEffect(() => {
+		if (!token) return;
 		fetchMeetings();
 		const id = setInterval(fetchMeetings, 60 * 1000);
 		return () => clearInterval(id);
-	}, []);
+	}, [token]);
 
 	const grouped = useMemo(() => {
 		const today: ApiMeeting[] = [];
@@ -216,14 +219,14 @@ export default function MeetingCard({
 			prev.map((p) =>
 				p._id === meeting._id
 					? {
-							...p,
-							attendees: willAttend
-								? [...(p.attendees ?? []), { email: userEmail }]
-								: (p.attendees ?? []).filter(
-										(a) =>
-											(a.email ?? '').toLowerCase() !== userEmail.toLowerCase()
-								  ),
-					  }
+						...p,
+						attendees: willAttend
+							? [...(p.attendees ?? []), { email: userEmail }]
+							: (p.attendees ?? []).filter(
+								(a) =>
+									(a.email ?? '').toLowerCase() !== userEmail.toLowerCase()
+							),
+					}
 					: p
 			)
 		);
@@ -262,14 +265,22 @@ export default function MeetingCard({
 		// - If end exists and end < now => past (allow)
 		// - Else if start exists and start < now => started in past (allow)
 		// - Otherwise (start in future or no dates) => not allowed to open details
-		const now = Date.now();
-		const isPast = (() => {
-			if (end) return end.getTime() < now;
-			if (start) return start.getTime() < now;
+		// const now = Date.now();
+		// const isPast = (() => {
+		// 	if (end) return end.getTime() < now;
+		// 	if (start) return start.getTime() < now;
+		// 	return false;
+		// })();
+
+		// const clickable = isPast;
+		const now = new Date();
+
+		const clickable = (() => {
+			if (!start) return false;
+			if (end && end < now) return true;
+			if (start <= now && (!end || end >= now)) return true;
 			return false;
 		})();
-
-		const clickable = isPast;
 
 		const handleClick = () => {
 			if (!clickable) {
@@ -300,11 +311,10 @@ export default function MeetingCard({
 						handleClick();
 					}
 				}}
-				className={`flex items-center justify-between py-4 border-b last:border-b-0 rounded-md focus:outline-none ${
-					clickable
-						? 'cursor-pointer hover:shadow-sm focus:ring-2 focus:ring-primary'
-						: 'opacity-75 cursor-not-allowed'
-				}`}
+				className={`flex items-center justify-between py-4 border-b last:border-b-0 rounded-md focus:outline-none ${clickable
+					? 'cursor-pointer hover:shadow-sm focus:ring-2 focus:ring-primary'
+					: 'opacity-75 cursor-not-allowed'
+					}`}
 				aria-disabled={!clickable}>
 				<div className='flex items-center gap-4 min-w-0'>
 					<div className='w-20 h-20 bg-gray-200 rounded-md flex flex-col items-center justify-center text-sm font-medium text-gray-700 shadow-sm flex-shrink-0'>
