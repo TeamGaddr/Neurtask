@@ -63,23 +63,6 @@ const Features: React.FC = () => {
 		if (inView) controls.start('visible');
 	}, [controls, inView]);
 
-	const containerVariants = {
-		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-		},
-	};
-
-	const itemVariants = {
-		hidden: { y: 20, opacity: 0 },
-		visible: {
-			y: 0,
-			opacity: 1,
-			transition: { duration: 0.5, ease: 'easeOut' },
-		},
-	};
-
 	const handleEmailSubmit = (email: string) => {
 		console.log('Email submitted:', email);
 	};
@@ -94,10 +77,8 @@ const Features: React.FC = () => {
 					ref={ref}
 					initial='hidden'
 					animate={controls}
-					variants={containerVariants}
 					className='text-center mb-5'>
 					<motion.h6
-						variants={itemVariants}
 						className='text-3xl md:text-4xl my-8 font-medium text-[#292929] mb-9'>
 						Features
 					</motion.h6>
@@ -136,12 +117,10 @@ const Features: React.FC = () => {
 					ref={ref}
 					initial='hidden'
 					animate={controls}
-					variants={containerVariants}
 					className='grid grid-cols-1 sm:grid-cols-2 items-center gap-4'>
 					{features.map((feature, idx) => (
 						<motion.div
 							key={idx}
-							variants={itemVariants}
 							className={`
                 p-4 sm:p-5 rounded-lg flex items-start gap-4 transition-all duration-300
                 ${
@@ -172,7 +151,6 @@ const Features: React.FC = () => {
 				</motion.div>
 
 				<motion.div
-					variants={itemVariants}
 					className='mt-8 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center max-w-[95%] gap-4'>
 					<EmailPopup
 							isVisible={true}

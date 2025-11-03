@@ -26,21 +26,6 @@ const Contact: React.FC = () => {
 		if (inView) controls.start('visible');
 	}, [controls, inView]);
 
-	const containerVariants = {
-		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: { staggerChildren: 0.2, delayChildren: 0.3 },
-		},
-	};
-	const itemVariants = {
-		hidden: { y: 20, opacity: 0 },
-		visible: {
-			y: 0,
-			opacity: 1,
-			transition: { duration: 0.5, ease: 'easeOut' },
-		},
-	};
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -93,16 +78,13 @@ const Contact: React.FC = () => {
 					ref={ref}
 					initial='hidden'
 					animate={controls}
-					variants={containerVariants}
 					className='md:max-w-sm max-w-3xl mx-auto'>
 					<motion.h2
-						variants={itemVariants}
 						className='text-3xl md:text-4xl font-medium text-[#292929] mb-10 text-center'>
 						Contact
 					</motion.h2>
 
 					<motion.form
-						variants={itemVariants}
 						className='space-y-2'
 						onSubmit={handleSubmit}>
 						<div className='mb-4'>

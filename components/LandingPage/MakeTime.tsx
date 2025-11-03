@@ -17,23 +17,6 @@ const MakeTime: React.FC = () => {
 		if (inView) controls.start('visible');
 	}, [controls, inView]);
 
-	const containerVariants = {
-		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: { staggerChildren: 0.2, delayChildren: 0.3 },
-		},
-	};
-
-	const itemVariants = {
-		hidden: { y: 20, opacity: 0 },
-		visible: {
-			y: 0,
-			opacity: 1,
-			transition: { duration: 0.5, ease: 'easeOut' },
-		},
-	};
-
 	const handleEmailSubmit = (email: string) => {
 		console.log('User email:', email);
 	};
@@ -45,7 +28,7 @@ const MakeTime: React.FC = () => {
 					ref={ref}
 					initial='hidden'
 					animate={controls}
-					variants={containerVariants}
+					
 					className='relative rounded-xl sm:rounded-2xl overflow-hidden min-h-[270px] sm:min-h-[320px] md:min-h-[400px]'>
 					<div className='absolute inset-0 z-0'>
 						<Image
@@ -62,13 +45,13 @@ const MakeTime: React.FC = () => {
 						<div className='relative z-10 w-full px-3 py-6 sm:p-12 md:p-13 flex flex-col justify-center maketime'>
 							<div className='max-w-full sm:max-w-xl'>
 								<motion.h2
-									variants={itemVariants}
+									
 									className='text-lg xs:text-xl sm:text-2xl md:text-3xl tracking-wider font-semibold text-white mb-2 sm:mb-6'>
 									Make Time for What Matters
 								</motion.h2>
 
 								<motion.p
-									variants={itemVariants}
+									
 									className='text-white mb-4 sm:mb-5 text-sm xs:text-sm md:text-[1rem] leading-8'>
 									<span>
 										With our AI agents taking care of the tasks, enjoy every
@@ -81,7 +64,7 @@ const MakeTime: React.FC = () => {
 								</motion.p>
 
 								<motion.div
-									variants={itemVariants}
+									
 									className='mt-4 sm:mt-6 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center w-full gap-3 sm:gap-4'>
 									<EmailPopup
 										isVisible={true}
@@ -92,7 +75,7 @@ const MakeTime: React.FC = () => {
 							</div>
 
 							<motion.div
-								variants={itemVariants}
+								
 								className='absolute hidden md:block top-[70%] md:top-[49%] right-[35%] md:right-[25%] z-30'>
 								 {/* <Image
 									src='/JoinAI.svg'
@@ -172,7 +155,7 @@ const MakeTime: React.FC = () => {
 							</motion.div>
 
 							<motion.div
-								variants={itemVariants}
+								
 								className='absolute hidden md:block bottom-[5%] right-[5%] md:right-[40%] z-30'>
 								{/* <Image
 									src='/JoinBubble.svg'

@@ -20,28 +20,7 @@ const Automate = () => {
 		}
 	}, [controls, inView]);
 
-	const containerVariants = {
-		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: {
-				staggerChildren: 0.2,
-				delayChildren: 0.3,
-			},
-		},
-	};
-
-	const itemVariants = {
-		hidden: { y: 20, opacity: 0 },
-		visible: {
-			y: 0,
-			opacity: 1,
-			transition: {
-				duration: 0.5,
-				ease: 'easeOut',
-			},
-		},
-	};
+	
 
 	return (
 		<section className='py-16 bg-white'>
@@ -50,16 +29,13 @@ const Automate = () => {
 					ref={ref}
 					initial='hidden'
 					animate={controls}
-					variants={containerVariants}
 					className='max-w-3xl mx-auto'>
 					<motion.h6
-						variants={itemVariants}
 						className='text-[35px] font-[500] text-gray-900 mb-16 text-center'>
 						What would you like to automate?
 					</motion.h6>
 
 					<motion.div
-						variants={itemVariants}
 						className='relative max-w-[42rem] mx-auto'>
 						<input
 							type='text'

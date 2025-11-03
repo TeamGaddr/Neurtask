@@ -16,19 +16,6 @@ const footerLinks = [
 	{ name: 'Contact', href: '#contact' },
 ];
 
-const containerVariants = {
-	hidden: { opacity: 0 },
-	visible: {
-		opacity: 1,
-		transition: { staggerChildren: 0.1, delayChildren: 0.3 },
-	},
-};
-
-const itemVariants = {
-	hidden: { y: 20, opacity: 0 },
-	visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } },
-};
-
 export default function Footer() {
 	const handleEmailSubmit = (finalEmail: string) => {
 		console.log('Email registered from inline form:', finalEmail);
@@ -42,10 +29,10 @@ export default function Footer() {
 				initial='hidden'
 				whileInView='visible'
 				viewport={{ once: true, amount: 0.1 }}
-				variants={containerVariants}
+				
 				className='mx-auto flex flex-col lg:flex-row justify-between items-start mb-8'>
 				<motion.div
-					variants={itemVariants}
+					
 					className='flex flex-col items-start gap-6  space-y-4'>
 					<Link
 						href='/'
@@ -72,7 +59,7 @@ export default function Footer() {
 				</motion.div>
 
 				<motion.div
-					variants={itemVariants}
+					
 					className='max-md:mt-0 lg:mt-0 mt-8 max-sm:mt-10 sm:mt-10  space-y-2'>
 					<h3 className='text-[#292929] font-semibold tracking-wide mb-4 text-md sm:text-sm'>
 						Be Among the First to Experience It
@@ -92,15 +79,15 @@ export default function Footer() {
 				initial='hidden'
 				whileInView='visible'
 				viewport={{ once: true, amount: 0.1 }}
-				variants={containerVariants}
+				
 				className='mx-auto flex flex-col md:flex-row justify-between items-center pt-8'>
 				<motion.p
-					variants={itemVariants}
+					
 					className='text-sm text-[#292929] mb-4 md:mb-0'>
 					© 2025 Neurtask
 				</motion.p>
 				<motion.div
-					variants={itemVariants}
+					
 					className='flex items-center gap-6'>
 					<Link
 						href='#'
