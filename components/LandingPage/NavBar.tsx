@@ -28,25 +28,6 @@ const Navbar = ({transparent = false}: {transparent?: boolean}) => {
 		setMobileMenuOpen(!mobileMenuOpen);
 	};
 
-	const mobileMenuVariants = {
-		closed: {
-			opacity: 0,
-			height: 0,
-			transition: {
-				duration: 0.3,
-				ease: 'easeInOut',
-			},
-		},
-		open: {
-			opacity: 1,
-			height: 'auto',
-			transition: {
-				duration: 0.3,
-				ease: 'easeInOut',
-			},
-		},
-	};
-
 	const getNavbarClasses = () => {
 		if (transparent) {
 			return 'relative bg-transparent text-white py-5';
@@ -130,7 +111,6 @@ const Navbar = ({transparent = false}: {transparent?: boolean}) => {
 				<motion.div
 					initial='closed'
 					animate={mobileMenuOpen ? 'open' : 'closed'}
-					variants={mobileMenuVariants}
 					className='lg:hidden overflow-hidden'>
 					<div className='py-4 space-y-4'>
 						<nav className='flex flex-col space-y-4'>
