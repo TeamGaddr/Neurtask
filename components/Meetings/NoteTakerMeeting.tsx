@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/** @format */
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -19,6 +15,7 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
 import { Check, Link, X } from 'lucide-react';
 import { type FC, useEffect, useRef, useState } from 'react';
+import { DateTimePicker } from '@/components/ui/datetimepicker';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
 const BACKEND_ORIGIN = (() => {
@@ -40,7 +37,7 @@ type CalendarEvent = {
 };
 
 type InitialMeeting = {
-	id: string; // _id
+	id: string;
 	title?: string;
 	meetingLink?: string;
 	calendarEventId?: string;
@@ -54,71 +51,6 @@ type NoteTakerProps = {
 	initialMeeting?: InitialMeeting;
 };
 
-// --- parsing helpers (same as before) ---
-const parseDDMMYYYY = (s: string): Date | null => {
-	if (!s) return null;
-	const parts = s.trim().split('/');
-	if (parts.length !== 3) return null;
-	const [dd, mm, yyyy] = parts.map((p) => Number.parseInt(p, 10));
-	if (!dd || !mm || !yyyy) return null;
-	const date = new Date(yyyy, mm - 1, dd);
-	if (isNaN(date.getTime())) return null;
-	if (
-		date.getDate() !== dd ||
-		date.getMonth() !== mm - 1 ||
-		date.getFullYear() !== yyyy
-	)
-		return null;
-	return date;
-};
-
-const parseTimeAMPM = (
-	s: string
-): { hours: number; minutes: number } | null => {
-	if (!s) return null;
-	const m = s.trim().match(/^(\d{1,2}):(\d{2})\s*([AaPp][Mm])$/);
-	if (!m) return null;
-	let hh = Number.parseInt(m[1], 10);
-	const mmn = Number.parseInt(m[2], 10);
-	const ampm = m[3].toUpperCase();
-	if (hh < 1 || hh > 12 || mmn < 0 || mmn > 59) return null;
-	if (ampm === 'AM') {
-		if (hh === 12) hh = 0;
-	} else {
-		if (hh !== 12) hh += 12;
-	}
-	return { hours: hh, minutes: mmn };
-};
-
-const combineToISOString = (
-	dateDDMMYYYY: string,
-	timeAMPM: string
-): string | null => {
-	const d = parseDDMMYYYY(dateDDMMYYYY);
-	const t = parseTimeAMPM(timeAMPM);
-	if (!d || !t) return null;
-	const combined = new Date(
-		d.getFullYear(),
-		d.getMonth(),
-		d.getDate(),
-		t.hours,
-		t.minutes,
-		0,
-		0
-	);
-	return combined.toISOString();
-};
-
-const formatTimeTo24Hour = (time12: string): string => {
-	const parsed = parseTimeAMPM(time12);
-	if (!parsed) return '';
-	const hours = parsed.hours.toString().padStart(2, '0');
-	const minutes = parsed.minutes.toString().padStart(2, '0');
-	return `${hours}:${minutes}`;
-};
-
-
-
 const formatEventLabel = (ev: CalendarEvent) => {
 	const title = ev.summary ?? 'Untitled';
 	const start = ev.start?.dateTime ?? ev.start?.date ?? '';
@@ -131,7 +63,11 @@ const formatEventLabel = (ev: CalendarEvent) => {
 	return `${title}${date ? ` — ${date}` : ''}`;
 };
 
-const getAppToken = () => {
+// SSR-safe token getter
+const getAppToken = (): string | null => {
+	// Check if we're in the browser
+	if (typeof window === 'undefined') return null;
+	
 	try {
 		const fromLs = localStorage.getItem(TOKEN_KEY);
 		if (fromLs) return fromLs;
@@ -144,19 +80,77 @@ const getAppToken = () => {
 	}
 };
 
+// SSR-safe localStorage setter
+const setAppToken = (token: string): void => {
+	if (typeof window === 'undefined') return;
+	
+	try {
+		localStorage.setItem(TOKEN_KEY, token);
+	} catch (err) {
+		console.warn('Failed to persist token', err);
+	}
+	
+	try {
+		const expires = new Date();
+		expires.setTime(expires.getTime() + 30 * 24 * 60 * 60 * 1000);
+		document.cookie = `auth-token=${encodeURIComponent(
+			token
+		)}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
+	} catch (err) {
+		console.warn('Failed to set cookie', err);
+	}
+};
 
-/** Small skeleton used while events are loading */
+const Spinner: React.FC<{ size?: number }> = ({ size = 18 }) => (
+	<svg
+		className='animate-spin'
+		width={size}
+		height={size}
+		viewBox='0 0 24 24'
+		fill='none'
+		aria-hidden>
+		<circle
+			cx='12'
+			cy='12'
+			r='10'
+			stroke='currentColor'
+			strokeWidth='4'
+			opacity='0.2'
+		/>
+		<path
+			d='M22 12a10 10 0 00-10-10'
+			stroke='currentColor'
+			strokeWidth='4'
+			strokeLinecap='round'
+		/>
+	</svg>
+);
+
 const SkeletonRow: React.FC<{ className?: string }> = ({ className = '' }) => (
 	<div className={`h-5 rounded-md bg-slate-200 animate-pulse ${className}`} />
 );
 
-const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
+// Helper: Combine Date + time string (HH:mm) to ISO string
+const combineDateAndTime = (date: Date | undefined, time: string): string | null => {
+	if (!date || !time) return null;
+	const [hours, minutes] = time.split(':').map(Number);
+	if (isNaN(hours) || isNaN(minutes)) return null;
+	
+	const combined = new Date(date);
+	combined.setHours(hours, minutes, 0, 0);
+	return combined.toISOString();
+};
+
+const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange, initialMeeting }) => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-	const [startDate, setStartDate] = useState(''); // dd/mm/yyyy
-	const [endDate, setEndDate] = useState('');
-	const [startTime, setStartTime] = useState('09:00 AM');
-	const [endTime, setEndTime] = useState('10:00 AM');
+	
+	// Date and time state
+	const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+	const [startTime, setStartTime] = useState('09:00');
+	const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+	const [endTime, setEndTime] = useState('10:00');
+	
 	const [selectedMeetingPlatform, setSelectedMeetingPlatform] = useState<
 		'google_calendar' | 'custom'
 	>('google_calendar');
@@ -184,44 +178,33 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 	const [showAllEvents, setShowAllEvents] = useState(false);
 	const VISIBLE_EVENTS_COUNT = 5;
 
-	// initial focus ref for accessibility
-	const firstInputRef = useRef<HTMLInputElement | null>(null);
-
-	// small retry/backoff config for fetching events
 	const MAX_FETCH_ATTEMPTS = 3;
-	const BASE_BACKOFF_MS = 500; // start 500ms, then double
+	const BASE_BACKOFF_MS = 500;
 
-	// track last fetch error to optionally show Retry CTA
 	const lastFetchErrorRef = useRef<string | null>(null);
 
-	// When modal opens: do NOT prefill from initialMeeting and do NOT auto-join.
+	// Check token and fetch events when modal opens
 	useEffect(() => {
 		if (open) {
+			// Only access token in browser
 			const token = getAppToken();
 			if (token) {
 				setGoogleConnected(true);
-				// only fetch events when token exists
 				fetchCalendarEvents(false).catch((err) =>
 					console.warn('fetchCalendarEvents error on open', err)
 				);
 			} else {
 				setGoogleConnected(false);
-				// keep events empty and show Connect CTA
 				setEvents([]);
 				setSelectedEventId(null);
 			}
-			// focus the first input a bit after open for accessibility
-			setTimeout(() => {
-				try {
-					firstInputRef.current?.focus();
-				} catch {}
-			}, 50);
 		} else {
-			// reset UI guard states when modal closes
+			// Reset when closed
 			setEvents([]);
 			setSelectedEventId(null);
 		}
 
+		// Cleanup
 		return () => {
 			if (popupPollRef.current) {
 				window.clearInterval(popupPollRef.current);
@@ -234,13 +217,10 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 			if (popupRef.current && !popupRef.current.closed)
 				popupRef.current.close();
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open]);
 
-	// fetch calendar events (exponential backoff), only when token exists OR manual=true
 	const fetchCalendarEvents = async (manual = false) => {
 		const appToken = getAppToken();
-		// If there's no app token and this is not a manual retry after auth, don't fetch.
 		if (!appToken && !manual) {
 			setEvents([]);
 			setEventsLoading(false);
@@ -250,7 +230,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 		setEventsLoading(true);
 		setEvents([]);
 		let attempt = 0;
-		let lastErr = null;
 
 		while (attempt < MAX_FETCH_ATTEMPTS) {
 			try {
@@ -274,7 +253,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 							},
 						});
 						if (!res.ok) {
-							lastErr = { url, status: res.status };
 							continue;
 						}
 						const json = await res.json();
@@ -298,24 +276,20 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 							description: it.description,
 						}));
 						lastFetchErrorRef.current = null;
-						break; // success on this candidate url
+						break;
 					} catch (err) {
-						lastErr = err;
 						continue;
 					}
 				}
 
-				// set events (may be empty) and exit retry loop
 				setEvents(mapped);
-				// IMPORTANT: do not auto-select the first event — keep placeholder until user chooses
-				// if (mapped.length && !selectedEventId) setSelectedEventId(mapped[0].id);
-
 				break;
 			} catch (err) {
 				attempt += 1;
 				if (attempt >= MAX_FETCH_ATTEMPTS) {
 					console.error('[NoteTaker] all event fetch attempts failed', err);
-					lastFetchErrorRef.current = 'Failed to fetch calendar events';
+					lastFetchErrorRef.current =
+						(err && (err as any).message) || 'Failed to fetch calendar events';
 					setEvents([]);
 					if (manual) {
 						toast({
@@ -329,8 +303,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 				const delay = BASE_BACKOFF_MS * 2 ** (attempt - 1);
 				await new Promise((r) => setTimeout(r, delay));
 				continue;
-			} finally {
-				// continue; eventsLoading cleared below
 			}
 		}
 
@@ -338,7 +310,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 		return events;
 	};
 
-	// google connect flow (popup + postMessage)
 	const handleConnectGoogle = async () => {
 		setError('');
 		setSuccess('');
@@ -358,18 +329,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 
 				if (data.success) {
 					if (data.token) {
-						try {
-							localStorage.setItem(TOKEN_KEY, data.token);
-						} catch (err) {
-							console.warn('Failed to persist token', err);
-						}
-						try {
-							const expires = new Date();
-							expires.setTime(expires.getTime() + 30 * 24 * 60 * 60 * 1000);
-							document.cookie = `auth-token=${encodeURIComponent(
-								data.token
-							)}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
-						} catch {}
+						setAppToken(data.token);
 					}
 
 					setGoogleConnected(true);
@@ -385,7 +345,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 						popupPollRef.current = null;
 					}
 
-					// manual=true so fetch runs even if token logic checks for appToken
 					await fetchCalendarEvents(true);
 				} else {
 					window.removeEventListener('message', onMessage);
@@ -493,15 +452,14 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 			return false;
 		}
 
-		const startISO = combineToISOString(startDate, startTime);
-		const endISO = combineToISOString(endDate, endTime);
+		const startISO = combineDateAndTime(startDate, startTime);
+		const endISO = combineDateAndTime(endDate, endTime);
+		
 		if (!startISO || !endISO) {
-			setError(
-				'Please use valid date (dd/mm/yyyy) and time (hh:mm AM/PM) formats.'
-			);
+			setError('Please select valid date and time.');
 			toast({
 				title: 'Validation error',
-				description: 'Invalid date/time format',
+				description: 'Invalid date/time',
 				variant: 'error',
 			});
 			return false;
@@ -537,25 +495,20 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 		return res.json();
 	};
 
-	// handle notetaker toggle: optimistic toggle -> small delay -> spinner -> save -> toast + close or rollback
 	const handleNotetakerToggle = async (v: boolean) => {
 		setError('');
 		if (v) {
-			// optimistic UI
 			setAllowNotetaker(true);
 
-			// small UX delay (toggle flips immediately, spinner shows after)
 			setTimeout(async () => {
 				setLoading(true);
 				try {
-					// validate; rollback if invalid
 					if (!validate()) {
 						setAllowNotetaker(false);
 						setLoading(false);
 						return;
 					}
 
-					// if user selected google platform but there are no events, fall back to custom (no CTAs)
 					if (
 						selectedMeetingPlatform === 'google_calendar' &&
 						events.length === 0
@@ -563,18 +516,15 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 						setSelectedMeetingPlatform('custom');
 					}
 
-					const payloadStartDate = startDate;
-					const payloadEndDate = endDate;
-					const payloadStartTime = formatTimeTo24Hour(startTime);
-					const payloadEndTime = formatTimeTo24Hour(endTime);
+					// Convert to ISO strings for backend
+					const startISO = combineDateAndTime(startDate, startTime);
+					const endISO = combineDateAndTime(endDate, endTime);
 
 					const payload: any = {
 						title: title || description || 'Meeting',
 						description,
-						startDate: payloadStartDate,
-						endDate: payloadEndDate,
-						startTime: payloadStartTime,
-						endTime: payloadEndTime,
+						startDateTime: startISO,
+						endDateTime: endISO,
 						notetakerEnabled: true,
 						...(selectedMeetingPlatform === 'custom'
 							? { meetingLink: customMeetingLink || undefined }
@@ -586,7 +536,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 
 					const created = await submitMeeting(payload);
 
-					// optional: copy generated meeting link
 					if (created?.meetingLink) {
 						try {
 							await navigator.clipboard.writeText(created.meetingLink);
@@ -614,7 +563,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 						description: err?.message || 'Failed to save meeting',
 						variant: 'error',
 					});
-					// rollback
 					setAllowNotetaker(false);
 				} finally {
 					setLoading(false);
@@ -625,18 +573,11 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 		}
 	};
 
-	// design-specific constants
 	const INPUT_BORDER = '#989898';
 	const INPUT_BG = '#FBFAF9';
 	const INPUT_TEXT_COLOR = '#111827';
 
-	// helper: when there are no events, allow the user to create one quickly
-	const handleCreateMeetingManually = () => {
-		setSelectedMeetingPlatform('custom');
-	};
-
 	const selectDisabled =
-		// only disable when connected & not loading & truly zero events
 		googleConnected && !eventsLoading && events.length === 0;
 
 	return (
@@ -647,7 +588,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 				className='max-w-md p-0 gap-0 bg-white rounded-2xl'
 				style={{ overflow: 'hidden' }}>
 				<div className='px-14 py-8'>
-					{/* header */}
 					<div className='flex justify-between items-center mb-4'>
 						<h2 className='text-base font-medium text-gray-900'>
 							Event Details
@@ -660,111 +600,31 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 						</button>
 					</div>
 
-					{/* main content */}
 					<div className='mx-auto max-w-sm'>
-						{/* Start date */}
+						{/* Start Date & Time */}
 						<div className='mb-5'>
-							<label
-								className='block text-sm text-gray-700 mb-2'
-								style={{ fontWeight: 400, fontSize: '13px' }}>
-								Start date
-							</label>
-							<input
-								ref={firstInputRef}
-								type='text'
-								value={startDate}
-								onChange={(e) => setStartDate(e.target.value)}
-								placeholder='dd/mm/yyyy'
-								className='w-full px-3 py-2 rounded-xl focus:outline-none'
-								style={{
-									backgroundColor: INPUT_BG,
-									border: `1px solid ${INPUT_BORDER}`,
-									color: INPUT_TEXT_COLOR,
-									fontWeight: 400,
-									fontSize: '13px',
-									borderRadius: 10,
-								}}
+							<DateTimePicker
+								label="Start"
+								date={startDate}
+								onDateChange={setStartDate}
+								time={startTime}
+								onTimeChange={setStartTime}
 								disabled={loading}
-								aria-label='Start date (dd/mm/yyyy)'
+								id="start-datetime"
 							/>
 						</div>
 
-						{/* End date */}
+						{/* End Date & Time */}
 						<div className='mb-5'>
-							<label
-								className='block text-sm text-gray-700 mb-2'
-								style={{ fontWeight: 400, fontSize: '13px' }}>
-								End date
-							</label>
-							<input
-								type='text'
-								value={endDate}
-								onChange={(e) => setEndDate(e.target.value)}
-								placeholder='dd/mm/yyyy'
-								className='w-full px-3 py-2 rounded-xl focus:outline-none'
-								style={{
-									backgroundColor: INPUT_BG,
-									border: `1px solid ${INPUT_BORDER}`,
-									color: INPUT_TEXT_COLOR,
-									fontWeight: 400,
-									fontSize: '13px',
-									borderRadius: 10,
-								}}
+							<DateTimePicker
+								label="End"
+								date={endDate}
+								onDateChange={setEndDate}
+								time={endTime}
+								onTimeChange={setEndTime}
 								disabled={loading}
-								aria-label='End date (dd/mm/yyyy)'
+								id="end-datetime"
 							/>
-						</div>
-
-						{/* Start & End time */}
-						<div className='grid grid-cols-2 gap-4 mb-5'>
-							<div>
-								<label
-									className='block text-sm text-gray-700 mb-2'
-									style={{ fontWeight: 400, fontSize: '13px' }}>
-									Start time
-								</label>
-								<input
-									type='text'
-									value={startTime}
-									onChange={(e) => setStartTime(e.target.value)}
-									placeholder='09:00 AM'
-									className='w-full px-3 py-2 rounded-xl focus:outline-none'
-									style={{
-										backgroundColor: INPUT_BG,
-										border: `1px solid ${INPUT_BORDER}`,
-										color: INPUT_TEXT_COLOR,
-										fontWeight: 400,
-										fontSize: '13px',
-										borderRadius: 10,
-									}}
-									disabled={loading}
-									aria-label='Start time (hh:mm AM/PM)'
-								/>
-							</div>
-							<div>
-								<label
-									className='block text-sm text-gray-700 mb-2'
-									style={{ fontWeight: 400, fontSize: '13px' }}>
-									End time
-								</label>
-								<input
-									type='text'
-									value={endTime}
-									onChange={(e) => setEndTime(e.target.value)}
-									placeholder='10:00 AM'
-									className='w-full px-3 py-2 rounded-xl focus:outline-none'
-									style={{
-										backgroundColor: INPUT_BG,
-										border: `1px solid ${INPUT_BORDER}`,
-										color: INPUT_TEXT_COLOR,
-										fontWeight: 400,
-										fontSize: '13px',
-										borderRadius: 10,
-									}}
-									disabled={loading}
-									aria-label='End time (hh:mm AM/PM)'
-								/>
-							</div>
 						</div>
 
 						{/* Description */}
@@ -800,28 +660,23 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 								Choose existing or created meeting
 							</label>
 
-							{/* Google calendar branch */}
 							{selectedMeetingPlatform === 'google_calendar' &&
 							googleConnected ? (
 								<>
-									{/* If connected but zero events -> explicit placeholder message (no CTAs) */}
 									{!eventsLoading && events.length === 0 ? (
 										<div className='mb-3 p-3 rounded-md bg-yellow-50 border border-yellow-200'>
 											<p className='text-sm text-yellow-800'>
-												You don’t have any calendar events. You can still create
+												You don't have any calendar events. You can still create
 												a meeting manually below.
 											</p>
 										</div>
 									) : null}
 
-									{/* Select: disabled when there are zero events */}
 									<Select
 										value={selectedEventId ?? ''}
 										onValueChange={(v) =>
 											setSelectedEventId((prev) => {
-												// if user clicked empty/placeholder - clear
 												if (!v) return null;
-												// toggle off if they clicked the currently selected item
 												return prev === v ? null : v;
 											})
 										}>
@@ -858,7 +713,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 												)}
 												{!eventsLoading && events.length === 0 && (
 													<>
-														{/* show a single inert item so dropdown isn't empty */}
 														<SelectItem
 															value='no-events'
 															disabled>
@@ -897,7 +751,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 										</SelectContent>
 									</Select>
 
-									{/* Copy meeting link */}
 									<Button
 										onClick={copySelectedMeetingLink}
 										disabled={!selectedEventId && !customMeetingLink}
@@ -932,7 +785,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 								</>
 							) : selectedMeetingPlatform === 'google_calendar' &&
 							  !googleConnected ? (
-								/* Not connected: show the Connect CTA */
 								<div className='mt-2 flex items-center justify-between rounded-xl p-3 border border-yellow-300 bg-yellow-50'>
 									<div>
 										<p className='font-medium text-sm'>
@@ -952,7 +804,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 									</div>
 								</div>
 							) : (
-								/* custom meeting link entry */
 								selectedMeetingPlatform === 'custom' && (
 									<div className='mt-2'>
 										<label
@@ -1004,7 +855,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 							/>
 						</div>
 
-						{/* status / feedback area (aria-live for screen readers) */}
 						<div
 							aria-live='polite'
 							className='sr-only'>
