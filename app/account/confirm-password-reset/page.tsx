@@ -7,18 +7,18 @@
 /** @format */
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function PasswordResetConfirm() {
 	const router = useRouter();
-	const params = useSearchParams();
+	// const params = useSearchParams();
 	const [status, setStatus] = useState('Confirming password reset...');
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		// const token = new URLSearchParams(window.location.search).get('token');
-		const token = params.get('token') ?? null;
+		const token = new URLSearchParams(window.location.search).get('token');
+		// const token = params.get('token') ?? null;
 		if (!token) {
 			setError('No reset token provided');
 			return;
