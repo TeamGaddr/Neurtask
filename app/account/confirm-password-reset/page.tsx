@@ -45,7 +45,7 @@ export default function PasswordResetConfirm() {
 					throw new Error(data.message || 'Invalid reset link');
 				}
 			})
-			.catch((err: any) => {
+			.catch((err) => {
 				console.error(err);
 				setError(err.message || 'An error occurred during confirmation');
 			});
