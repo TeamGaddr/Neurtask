@@ -1,4 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * eslint-disable @typescript-eslint/no-explicit-any
+ *
+ * @format
+ */
+
 /** @format */
 'use client';
 
@@ -7,7 +12,7 @@ import { useEffect, useState } from 'react';
 
 export default function PasswordResetConfirm() {
 	const router = useRouter();
-	const params = useSearchParams?.();
+	const params = useSearchParams();
 	const [status, setStatus] = useState('Confirming password reset...');
 	const [error, setError] = useState<string | null>(null);
 
