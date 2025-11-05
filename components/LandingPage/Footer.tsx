@@ -29,10 +29,10 @@ export default function Footer() {
 				initial='hidden'
 				whileInView='visible'
 				viewport={{ once: true, amount: 0.1 }}
-				
+
 				className='mx-auto flex flex-col lg:flex-row justify-between items-start mb-8'>
 				<motion.div
-					
+
 					className='flex flex-col items-start gap-6  space-y-4'>
 					<Link
 						href='/'
@@ -59,7 +59,7 @@ export default function Footer() {
 				</motion.div>
 
 				<motion.div
-					
+
 					className='max-md:mt-0 lg:mt-0 mt-8 max-sm:mt-10 sm:mt-10  space-y-2'>
 					<h3 className='text-[#292929] font-semibold tracking-wide mb-4 text-md sm:text-sm'>
 						Be Among the First to Experience It
@@ -79,23 +79,23 @@ export default function Footer() {
 				initial='hidden'
 				whileInView='visible'
 				viewport={{ once: true, amount: 0.1 }}
-				
+
 				className='mx-auto flex flex-col md:flex-row justify-between items-center pt-8'>
 				<motion.p
-					
+
 					className='text-sm text-[#292929] mb-4 md:mb-0'>
 					© 2025 Neurtask
 				</motion.p>
 				<motion.div
-					
+
 					className='flex items-center gap-6'>
 					<Link
-						href='#'
+						href='/privacy'
 						className='text-sm underline text-[#292929] hover:text-gray-700 transition-colors'>
 						Privacy policy
 					</Link>
 					<Link
-						href='#'
+						href='/terms'
 						className='text-sm underline text-[#292929] hover:text-gray-700 transition-colors'>
 						Terms of service
 					</Link>
