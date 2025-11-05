@@ -44,29 +44,31 @@ function shouldExcludeLayout(pathname: string): boolean {
   return false;
 }
 
- const EXCLUDED_PATHS = [
-    '/',
-    '/account/login',
-    '/account/signup',
-    '/account',
-    '/password-recovery',
-    '/account/forgot-password',
-    '/api/auth/google'
-  ];
+const EXCLUDED_PATHS = [
+  '/',
+  '/account/login',
+  '/account/signup',
+  '/account',
+  '/password-recovery',
+  '/account/forgot-password',
+  '/api/auth/google',
+  "/privacy",
+  "/terms"
+];
 
 export default function RootLayout({ children }: RootLayoutProps) {
   const pathname = usePathname();
   const isExcludedPage = shouldExcludeLayout(pathname);
   const router = useRouter();
 
- 
+
 
   useEffect(() => {
-      if (typeof window === 'undefined') return;
-      const token = localStorage.getItem("token");
-      if (!token && !EXCLUDED_PATHS.includes(pathname)) {
-        router.push("/account/login");
-      }
+    if (typeof window === 'undefined') return;
+    const token = localStorage.getItem("token");
+    if (!token && !EXCLUDED_PATHS.includes(pathname)) {
+      router.push("/account/login");
+    }
   }, [pathname, router]);
 
   return (
