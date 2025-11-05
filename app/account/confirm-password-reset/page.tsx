@@ -1,8 +1,8 @@
-
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
+
 
 function PasswordResetConfirmContent() {
 	const router = useRouter();
@@ -12,6 +12,7 @@ function PasswordResetConfirmContent() {
 
 	useEffect(() => {
 		const token = params.get('token') ?? null;
+
 		if (!token) {
 			setError('No reset token provided');
 			return;

@@ -13,9 +13,15 @@ interface GoogleAuthMessage {
 function LoginSuccessHandler() {
 	const searchParams = useSearchParams();
 
+
+export default function LoginSuccessPage() {
 	useEffect(() => {
-		const token = searchParams.get('token');
-		const email = searchParams.get('email');
+		const params =
+			typeof window !== 'undefined'
+				? new URLSearchParams(window.location.search)
+				: null;
+		const token = params?.get('token');
+		const email = params?.get('email');
 
 	
 		try {
@@ -54,8 +60,9 @@ function LoginSuccessHandler() {
 		} catch (err) {
 			console.error(err);
 		}
+
 		}, 250);
-	}, [searchParams]);
+	}, []); // run once on client
 
 	return (
 		<div style={{ padding: 20, fontFamily: 'system-ui' }}>
