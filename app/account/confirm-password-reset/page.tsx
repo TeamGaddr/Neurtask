@@ -1,31 +1,24 @@
-/**
- * eslint-disable @typescript-eslint/no-explicit-any
- *
- * @format
- */
-
-/** @format */
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
 
-export default function PasswordResetConfirm() {
+
+function PasswordResetConfirmContent() {
 	const router = useRouter();
-	// const params = useSearchParams();
+	const params = useSearchParams();
 	const [status, setStatus] = useState('Confirming password reset...');
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		const token = new URLSearchParams(window.location.search).get('token');
-		// const token = params.get('token') ?? null;
+		const token = params.get('token') ?? null;
+
 		if (!token) {
 			setError('No reset token provided');
 			return;
 		}
 
 		const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
-		// Debug/log if you need:
 		console.log(
 			'Calling backend confirm:',
 			`${API_BASE}/api/auth/confirm-password-reset?token=${token}`
@@ -45,11 +38,11 @@ export default function PasswordResetConfirm() {
 					throw new Error(data.message || 'Invalid reset link');
 				}
 			})
-			.catch((err) => {
+			.catch((err: Error) => {
 				console.error(err);
 				setError(err.message || 'An error occurred during confirmation');
 			});
-	}, []);
+	}, [params, router]);
 
 	return (
 		<div className='min-h-screen flex items-center justify-center bg-gray-100 px-4'>
@@ -60,5 +53,24 @@ export default function PasswordResetConfirm() {
 				{error && <p className='text-red-500 text-sm'>{error}</p>}
 			</div>
 		</div>
+	);
+}
+
+
+export default function PasswordResetConfirm() {
+	return (
+		<Suspense 
+			fallback={
+				<div className='min-h-screen flex items-center justify-center bg-gray-100 px-4'>
+					<div className='bg-white p-8 rounded-2xl shadow-md max-w-md w-full text-center'>
+						<h2 className='text-md font-normal text-gray-800 mb-4'>
+							Loading...
+						</h2>
+					</div>
+				</div>
+			}
+		>
+			<PasswordResetConfirmContent />
+		</Suspense>
 	);
 }
