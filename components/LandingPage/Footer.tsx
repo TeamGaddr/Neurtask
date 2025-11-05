@@ -103,12 +103,12 @@ export default function Footer() {
 					variants={itemVariants}
 					className='flex items-center gap-6'>
 					<Link
-						href='#'
+						href='/privacy'
 						className='text-sm underline text-[#292929] hover:text-gray-700 transition-colors'>
 						Privacy policy
 					</Link>
 					<Link
-						href='#'
+						href='/terms'
 						className='text-sm underline text-[#292929] hover:text-gray-700 transition-colors'>
 						Terms of service
 					</Link>

@@ -56,7 +56,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
     '/account',
     '/password-recovery',
     '/account/forgot-password',
-    '/api/auth/google'
+    '/api/auth/google',
+    '/privacy',
+    '/terms'
   ];
 
   useEffect(() => {
