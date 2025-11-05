@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
 	Select,
@@ -15,7 +14,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
 import { Check, Link, X } from 'lucide-react';
-import { type FC, useEffect, useRef, useState } from 'react';
+import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { DateTimePicker } from '@/components/ui/datetimepicker';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
@@ -52,6 +51,33 @@ type NoteTakerProps = {
 	initialMeeting?: InitialMeeting;
 };
 
+// Type for calendar event items from API
+interface CalendarEventItem {
+	id: string;
+	summary?: string;
+	start?: { dateTime?: string; date?: string };
+	end?: { dateTime?: string; date?: string };
+	hangoutLink?: string;
+	conferenceData?: {
+		entryPoints?: Array<{
+			entryPointType?: string;
+			uri?: string;
+		}>;
+	};
+	description?: string;
+}
+
+// Type for meeting payload
+interface MeetingPayload {
+	title: string;
+	description: string;
+	startDateTime: string | null;
+	endDateTime: string | null;
+	notetakerEnabled: boolean;
+	meetingLink?: string;
+	calendarEventId?: string;
+}
+
 const formatEventLabel = (ev: CalendarEvent) => {
 	const title = ev.summary ?? 'Untitled';
 	const start = ev.start?.dateTime ?? ev.start?.date ?? '';
@@ -66,7 +92,6 @@ const formatEventLabel = (ev: CalendarEvent) => {
 
 // SSR-safe token getter
 const getAppToken = (): string | null => {
-	// Check if we're in the browser
 	if (typeof window === 'undefined') return null;
 	
 	try {
@@ -102,7 +127,6 @@ const setAppToken = (token: string): void => {
 	}
 };
 
-
 const SkeletonRow: React.FC<{ className?: string }> = ({ className = '' }) => (
 	<div className={`h-5 rounded-md bg-slate-200 animate-pulse ${className}`} />
 );
@@ -121,8 +145,7 @@ const combineDateAndTime = (date: Date | undefined, time: string): string | null
 const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-	
-	// Date and time state
+
 	const [startDate, setStartDate] = useState<Date | undefined>(undefined);
 	const [startTime, setStartTime] = useState('09:00');
 	const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -160,43 +183,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 
 	const lastFetchErrorRef = useRef<string | null>(null);
 
-	// Check token and fetch events when modal opens
-	useEffect(() => {
-		if (open) {
-			// Only access token in browser
-			const token = getAppToken();
-			if (token) {
-				setGoogleConnected(true);
-				fetchCalendarEvents(false).catch((err) =>
-					console.warn('fetchCalendarEvents error on open', err)
-				);
-			} else {
-				setGoogleConnected(false);
-				setEvents([]);
-				setSelectedEventId(null);
-			}
-		} else {
-			// Reset when closed
-			setEvents([]);
-			setSelectedEventId(null);
-		}
-
-		// Cleanup
-		return () => {
-			if (popupPollRef.current) {
-				window.clearInterval(popupPollRef.current);
-				popupPollRef.current = null;
-			}
-			if (messageListenerRef.current) {
-				window.removeEventListener('message', messageListenerRef.current);
-				messageListenerRef.current = undefined;
-			}
-			if (popupRef.current && !popupRef.current.closed)
-				popupRef.current.close();
-		};
-	}, [open]);
-
-	const fetchCalendarEvents = async (manual = false) => {
+	const fetchCalendarEvents = useCallback(async (manual = false) => {
 		const appToken = getAppToken();
 		if (!appToken && !manual) {
 			setEvents([]);
@@ -207,6 +194,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 		setEventsLoading(true);
 		setEvents([]);
 		let attempt = 0;
+		let mapped: CalendarEvent[] = []; 
 
 		while (attempt < MAX_FETCH_ATTEMPTS) {
 			try {
@@ -216,8 +204,6 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 					`${API_BASE}/api/auth/google/events`,
 					`${API_BASE}/api/calendar/events`,
 				];
-
-				let mapped: CalendarEvent[] = [];
 
 				for (const url of candidateUrls) {
 					try {
@@ -233,14 +219,14 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 							continue;
 						}
 						const json = await res.json();
-						let items = [];
+						let items: CalendarEventItem[] = [];
 						if (Array.isArray(json)) items = json;
 						else if (Array.isArray(json?.events)) items = json.events;
 						else if (Array.isArray(json?.items)) items = json.items;
 						else if (Array.isArray(json?.data?.items)) items = json.data.items;
 						else items = json?.items ?? json?.events ?? [];
 
-						mapped = (items || []).map((it: any) => ({
+						mapped = (items || []).map((it: CalendarEventItem) => ({
 							id: it.id,
 							summary: it.summary,
 							start: it.start,
@@ -248,14 +234,14 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 							hangoutLink:
 								it.hangoutLink ??
 								it.conferenceData?.entryPoints?.find(
-									(e: any) => e.entryPointType === 'video'
+									(e) => e.entryPointType === 'video'
 								)?.uri,
 							description: it.description,
 						}));
 						lastFetchErrorRef.current = null;
 						break;
 					} catch (err) {
-						console.log(err)
+						console.log(err);
 						continue;
 					}
 				}
@@ -284,8 +270,40 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 		}
 
 		setEventsLoading(false);
-		return events;
-	};
+		return mapped;
+	}, []); 
+
+	useEffect(() => {
+		if (open) {
+			const token = getAppToken();
+			if (token) {
+				setGoogleConnected(true);
+				fetchCalendarEvents(false).catch((err) =>
+					console.warn('fetchCalendarEvents error on open', err)
+				);
+			} else {
+				setGoogleConnected(false);
+				setEvents([]);
+				setSelectedEventId(null);
+			}
+		} else {
+			setEvents([]);
+			setSelectedEventId(null);
+		}
+
+		return () => {
+			if (popupPollRef.current) {
+				window.clearInterval(popupPollRef.current);
+				popupPollRef.current = null;
+			}
+			if (messageListenerRef.current) {
+				window.removeEventListener('message', messageListenerRef.current);
+				messageListenerRef.current = undefined;
+			}
+			if (popupRef.current && !popupRef.current.closed)
+				popupRef.current.close();
+		};
+	}, [open, fetchCalendarEvents]);
 
 	const handleConnectGoogle = async () => {
 		setError('');
@@ -455,7 +473,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 		return true;
 	};
 
-	const submitMeeting = async (payload: any) => {
+	const submitMeeting = async (payload: MeetingPayload) => {
 		const appToken = getAppToken();
 		const res = await fetch(`${API_BASE}/api/meeting`, {
 			method: 'POST',
@@ -493,11 +511,10 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 						setSelectedMeetingPlatform('custom');
 					}
 
-					// Convert to ISO strings for backend
 					const startISO = combineDateAndTime(startDate, startTime);
 					const endISO = combineDateAndTime(endDate, endTime);
 
-					const payload: any = {
+					const payload: MeetingPayload = {
 						title: title || description || 'Meeting',
 						description,
 						startDateTime: startISO,
@@ -523,7 +540,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 							});
 						} catch {
 							toast({
-								title: 'Faild to copy',
+								title: 'Failed to copy',
 								description: 'Meeting link failed to copy.',
 								variant: 'error',
 							});
@@ -536,12 +553,13 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 						variant: 'success',
 					});
 					onOpenChange(false);
-				} catch (err: any) {
+				} catch (err) {
+					const errorMessage = err instanceof Error ? err.message : 'Failed to save meeting with notetaker';
 					console.error('Auto-save notetaker error', err);
-					setError(err?.message || 'Failed to save meeting with notetaker');
+					setError(errorMessage);
 					toast({
 						title: 'Save failed',
-						description: err?.message || 'Failed to save meeting',
+						description: errorMessage,
 						variant: 'error',
 					});
 					setAllowNotetaker(false);
@@ -568,6 +586,10 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 			<DialogContent
 				className='max-w-md p-0 gap-0 bg-white rounded-2xl'
 				style={{ overflow: 'hidden' }}>
+				<DialogTitle className="sr-only">Event Details</DialogTitle>
+				<DialogDescription className="sr-only">
+					Create or select a meeting event with optional notetaker
+				</DialogDescription>
 				<div className='px-14 py-8'>
 					<div className='flex justify-between items-center mb-4'>
 						<h2 className='text-base font-medium text-gray-900'>

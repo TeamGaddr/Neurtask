@@ -27,6 +27,12 @@ export default function MeetingPage() {
 	const [transcript, setTranscript] = useState<ITranscriptById | null>(null);
 	const { id } = useParams()
 	const [searchQuery, setSearchQuery] = useState('');
+	const [token, setToken] = useState<string | null>(null);
+
+	useEffect(() => {
+  		const storedToken = localStorage.getItem('token');
+  		setToken(storedToken);
+	}, []);
 
 	useEffect(() => {
 		const getSummary = async () => {
@@ -53,7 +59,7 @@ export default function MeetingPage() {
 
 		getSummary()
 
-	}, []);
+	}, [id, token]);
 
 	console.log()
 
@@ -80,7 +86,7 @@ export default function MeetingPage() {
 			}
 		}
 		getTranscriptById()
-	}, [])
+	}, [id, token])
 
 	if (!summary || !transcript) return <div>This summary and transcription is not available.</div>;
 

@@ -5,7 +5,7 @@
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useUserStore } from '../../lib/store/userStore';
 import { Card } from '../ui/card';
 
@@ -100,7 +100,7 @@ export default function MeetingCard({
 		setToken(storedToken)
 	}, [])
 
-	const fetchMeetings = async () => {
+	const fetchMeetings = useCallback( async () => {
 		try {
 			setLoading(true);
 			const res = await fetch(`${API_BASE}/api/meeting`, {
@@ -142,14 +142,14 @@ export default function MeetingCard({
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [token]);
 
 	useEffect(() => {
 		if (!token) return;
 		fetchMeetings();
 		const id = setInterval(fetchMeetings, 60 * 1000);
 		return () => clearInterval(id);
-	}, [token]);
+	}, [token, fetchMeetings]);
 
 	const grouped = useMemo(() => {
 		const today: ApiMeeting[] = [];
