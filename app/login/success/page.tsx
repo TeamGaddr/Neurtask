@@ -1,7 +1,6 @@
 'use client';
 
 import { Suspense, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 interface GoogleAuthMessage {
 	type: 'google-auth';
@@ -11,8 +10,6 @@ interface GoogleAuthMessage {
 }
 
 function LoginSuccessHandler() {
-	const searchParams = useSearchParams();
-
 
 	useEffect(() => {
 		const params =
