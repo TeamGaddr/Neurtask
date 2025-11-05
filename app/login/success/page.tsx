@@ -14,7 +14,6 @@ function LoginSuccessHandler() {
 	const searchParams = useSearchParams();
 
 
-export default function LoginSuccessPage() {
 	useEffect(() => {
 		const params =
 			typeof window !== 'undefined'
@@ -70,8 +69,8 @@ export default function LoginSuccessPage() {
 		<p>You can close this window — signing in was successful.</p>
 		</div>
 	);
-}
 
+}
 export default function LoginSuccessPage() {
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
