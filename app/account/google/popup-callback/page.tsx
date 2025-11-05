@@ -1,14 +1,11 @@
 'use client';
 
 import { Suspense, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 function OAuthHandler() {
-  	const params = useSearchParams();
  
 
 	useEffect(() => {
-		// const token = params.get('token');
 		const token = new URLSearchParams(window.location.search).get('token');
 		if (token && window.opener) {
 		window.opener.postMessage({ token }, window.location.origin);
