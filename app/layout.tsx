@@ -75,6 +75,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html
       lang='en'
       className={inter.className}>
+      <head>
+        <meta name="google-site-verification" content="-lzls92uAj7r9eA_-RbJasfWpoRw8T3cY0jEHxwf4BU" />
+      </head>
       <body className='h-full'>
         <div className='flex h-screen bg-white'>
           {!isExcludedPage && <Sidebar />}
