@@ -206,7 +206,7 @@ export default function PrivacyPage() {
                 <li>In-app notifications</li>
             </ul>
             <p className="mb-8">
-                The "Last Updated" date at the top reflects the most recent revision. Continued use of our services after changes constitutes acceptance of the updated policy.
+                The {"Last Updated"} date at the top reflects the most recent revision. Continued use of our services after changes constitutes acceptance of the updated policy.
             </p>
 
             <h2 className="text-2xl font-semibold mt-8 mb-4">12. Contact Us</h2>
