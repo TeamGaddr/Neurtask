@@ -30,8 +30,8 @@ export default function MeetingPage() {
 	const [token, setToken] = useState<string | null>(null);
 
 	useEffect(() => {
-  		const storedToken = localStorage.getItem('token');
-  		setToken(storedToken);
+		const storedToken = localStorage.getItem('token');
+		setToken(storedToken);
 	}, []);
 
 	useEffect(() => {
@@ -50,9 +50,9 @@ export default function MeetingPage() {
 				setSummary(summary)
 			} catch (error) {
 				toast({
-                title: 'Events fetch failed',
-                description: String(error),
-				variant: 'error',
+					title: 'Events fetch failed',
+					description: String(error),
+					variant: 'error',
 				});
 			}
 		}
@@ -78,18 +78,44 @@ export default function MeetingPage() {
 				setTranscript(transcript)
 			}
 			catch (error) {
-			toast({
-                title: 'Events fetch failed',
-                description: String(error),
-				variant: 'error',
+				toast({
+					title: 'Events fetch failed',
+					description: String(error),
+					variant: 'error',
 				});
 			}
 		}
 		getTranscriptById()
 	}, [id, token])
 
-	if (!summary || !transcript) return <div>This summary and transcription is not available.</div>;
+	if (!summary || !transcript || !summary.summary || transcript.transcript.length === 0) {
+		return (
+			<section>
+				<section className='p-6 space-y-8'>
+					<div className='p-6 space-y-8'>
+						<MeetingHeader />
 
+						<div className='flex gap-8'>
+							<div className='flex-1 max-w-5xl space-y-8'>
+								<OngoingMeeting />
+								<MeetingDetails />
+							</div>
+						</div>
+
+					</div>
+				</section>
+				<div className="flex flex-col items-center justify-center min-h-[30vh] text-center space-y-3">
+					<h2 className="text-lg font-semibold text-gray-700">
+						The summary and transcription is not available.
+					</h2>
+					<p className="text-sm text-gray-500">
+						No summary or transcripton was generated for this meeting.
+					</p>
+				</div>
+			</section>
+
+		);
+	}
 	const searchInTranscript = transcript.transcript.filter((item) =>
 		item.text.toLowerCase().includes(searchQuery.toLowerCase())
 	);
