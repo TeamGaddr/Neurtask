@@ -4,9 +4,11 @@
  * @format
  */
 
-/** @format */
-
-// /** @format */
+/**
+ * eslint-disable @typescript-eslint/no-explicit-any
+ *
+ * @format
+ */
 
 'use client';
 
@@ -106,7 +108,7 @@ const OngoingMeeting: React.FC = () => {
 	const ongoingMeeting = useMemo(() => {
 		const now = new Date();
 		return (
-			meetings.find((m: any) => {
+			meetings.find((m) => {
 				if (!m.startDateTime || !m.endDateTime) return false;
 				const s = new Date(m.startDateTime);
 				const e = new Date(m.endDateTime);
@@ -160,6 +162,7 @@ const OngoingMeeting: React.FC = () => {
 
 			// refresh cache silently
 			// refresh(false).catch(() => { });
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
 			toast({
 				variant: 'error',
@@ -171,6 +174,7 @@ const OngoingMeeting: React.FC = () => {
 		}
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const joinMeeting = (meeting: any | null) => {
 		if (!meeting) {
 			toast({
