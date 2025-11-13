@@ -56,11 +56,29 @@ const UpcomingCard = ({ day, label, month, events }: GroupedMeetings) => (
 	</Card>
 );
 
+interface Task {
+	id: string;
+	title: string;
+	date: string;
+}
+
+const TaskCard = ({ title, date }: Task) => (
+	<Card className="bg-white p-3 rounded-md shadow-sm">
+		<div className="flex justify-between items-center">
+			<h4 className="text-sm font-medium text-gray-800">{title}</h4>
+			<p className="text-xs text-gray-500">{format(parseISO(date), 'yyyy-MM-dd')}</p>
+		</div>
+	</Card>
+);
+
 export default function Dashboard() {
 	const router = useRouter();
 	const userId = useUserStore((state) => state.user?._id);
 	const [grouped, setGrouped] = useState<GroupedMeetings[]>([]);
 	const [loading, setLoading] = useState(false);
+	const [tasks] = useState<Task[]>([]);
+	const [taskLoading] = useState(false);
+	const [taskError] = useState<string | null>(null);
 
 	// // Tasks state
 	// const [tasks, setTasks] = useState<Task[]>([]);
@@ -71,135 +89,135 @@ export default function Dashboard() {
 	// const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-    if (!userId) return;
-    
-    const fetchUpcoming = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`http://localhost:3001/api/calendar/events`, {
-          method: 'GET',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-        });
-        if (!res.ok) throw new Error('Failed to fetch meetings');
+		if (!userId) return;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const data: any[] = await res.json();
-        const now = new Date();
+		const fetchUpcoming = async () => {
+			setLoading(true);
+			try {
+				const res = await fetch(`http://localhost:3001/api/calendar/events`, {
+					method: 'GET',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+				});
+				if (!res.ok) throw new Error('Failed to fetch meetings');
 
-        const future = data.filter((item) =>
-          isAfter(parseISO(item.end.dateTime), now)
-        );
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const data: any[] = await res.json();
+				const now = new Date();
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const temp: Record<string, any[]> = {};
-        future.forEach((item) => {
-          const dateKey = format(parseISO(item.start.dateTime), 'yyyy-MM-dd');
-          temp[dateKey] = temp[dateKey] || [];
-          temp[dateKey].push({
-            id: item.id,
-            title: item.summary || 'Untitled',
-            startTime: item.start.dateTime,
-            endTime: item.end.dateTime
-          });
-        });
+				const future = data.filter((item) =>
+					isAfter(parseISO(item.end.dateTime), now)
+				);
 
-        const arranged = Object.keys(temp)
-          .sort()
-          .map((key) => {
-            const arr = temp[key];
-            const dateObj = parseISO(arr[0].startTime);
-            const label = isToday(dateObj)
-              ? 'Today'
-              : isTomorrow(dateObj)
-                ? 'Tomorrow'
-                : undefined;
-            return {
-              day: format(dateObj, 'd'),
-              label,
-              month: format(dateObj, 'LLLL yyyy'),
-              events: arr.map(
-                (m) =>
-                  `${m.title} ${format(parseISO(m.startTime), 'HH:mm')} - ${format(parseISO(m.endTime), 'HH:mm')}`
-              ),
-            };
-          });
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const temp: Record<string, any[]> = {};
+				future.forEach((item) => {
+					const dateKey = format(parseISO(item.start.dateTime), 'yyyy-MM-dd');
+					temp[dateKey] = temp[dateKey] || [];
+					temp[dateKey].push({
+						id: item.id,
+						title: item.summary || 'Untitled',
+						startTime: item.start.dateTime,
+						endTime: item.end.dateTime
+					});
+				});
 
-        setGrouped(arranged);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+				const arranged = Object.keys(temp)
+					.sort()
+					.map((key) => {
+						const arr = temp[key];
+						const dateObj = parseISO(arr[0].startTime);
+						const label = isToday(dateObj)
+							? 'Today'
+							: isTomorrow(dateObj)
+								? 'Tomorrow'
+								: undefined;
+						return {
+							day: format(dateObj, 'd'),
+							label,
+							month: format(dateObj, 'LLLL yyyy'),
+							events: arr.map(
+								(m) =>
+									`${m.title} ${format(parseISO(m.startTime), 'HH:mm')} - ${format(parseISO(m.endTime), 'HH:mm')}`
+							),
+						};
+					});
 
-    fetchUpcoming();
-  }, [userId]);
+				setGrouped(arranged);
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setLoading(false);
+			}
+		};
 
-// useEffect(() => {
-//   const fetchTasksAndNotes = async () => {
-//     setTaskLoading(true);
-//     setTaskError(null);
+		fetchUpcoming();
+	}, [userId]);
 
-//     try {
-//       // Step 1: Fetch tasks
-//       const res = await fetch('http://localhost:3001/api/meeting/tasks', {
-//         method: 'GET',
-//         credentials: 'include',
-//         headers: { 'Content-Type': 'application/json' },
-//       });
+	// useEffect(() => {
+	//   const fetchTasksAndNotes = async () => {
+	//     setTaskLoading(true);
+	//     setTaskError(null);
 
-//       if (!res.ok) throw new Error('Failed to fetch tasks');
+	//     try {
+	//       // Step 1: Fetch tasks
+	//       const res = await fetch('http://localhost:3001/api/meeting/tasks', {
+	//         method: 'GET',
+	//         credentials: 'include',
+	//         headers: { 'Content-Type': 'application/json' },
+	//       });
 
-//       const data: Task[] = await res.json();
-//       setTasks(data);
-//       console.log('Fetched tasks:', data);
+	//       if (!res.ok) throw new Error('Failed to fetch tasks');
 
-//       if (data.length === 0) {
-//         setNotes([]);
-//         return;
-//       }
+	//       const data: Task[] = await res.json();
+	//       setTasks(data);
+	//       console.log('Fetched tasks:', data);
 
-//       // Step 2: Fetch notes for tasks with valid IDs
-//       const notesPromises = data
-//         .filter(task => task.id) // only tasks with valid IDs
-//         .map(task =>
-//           fetch(`http://localhost:3001/api/meeting/${task.id}/notes`)
-//             .then(res => {
-//               if (!res.ok) throw new Error(`Failed to fetch notes for task ${task.id}`);
-//               return res.json();
-//             })
-//             .catch(err => {
-//               console.warn(err.message);
-//               return []; // return empty notes if a fetch fails
-//             })
-//         );
+	//       if (data.length === 0) {
+	//         setNotes([]);
+	//         return;
+	//       }
 
-//       const allNotes = await Promise.allSettled(notesPromises);
+	//       // Step 2: Fetch notes for tasks with valid IDs
+	//       const notesPromises = data
+	//         .filter(task => task.id) // only tasks with valid IDs
+	//         .map(task =>
+	//           fetch(`http://localhost:3001/api/meeting/${task.id}/notes`)
+	//             .then(res => {
+	//               if (!res.ok) throw new Error(`Failed to fetch notes for task ${task.id}`);
+	//               return res.json();
+	//             })
+	//             .catch(err => {
+	//               console.warn(err.message);
+	//               return []; // return empty notes if a fetch fails
+	//             })
+	//         );
 
-//       // Step 3: Flatten notes and format
-//       const notes: Note[] = allNotes
-//         .filter(r => r.status === 'fulfilled')
-//         .flatMap((r: any) => r.value)
-//         .map((note: any) => ({
-//           meetingTitle: note.meetingTitle,
-//           transcript: note.transcript,
-//         }));
+	//       const allNotes = await Promise.allSettled(notesPromises);
 
-//       setNotes(notes);
-//       console.log('Fetched notes:', notes);
+	//       // Step 3: Flatten notes and format
+	//       const notes: Note[] = allNotes
+	//         .filter(r => r.status === 'fulfilled')
+	//         .flatMap((r: any) => r.value)
+	//         .map((note: any) => ({
+	//           meetingTitle: note.meetingTitle,
+	//           transcript: note.transcript,
+	//         }));
 
-//     } catch (err: any) {
-//       console.error(err);
-//       setTaskError(err.message || 'Something went wrong');
-//       setNotes([]);
-//     } finally {
-//       setTaskLoading(false);
-//     }
-//   };
+	//       setNotes(notes);
+	//       console.log('Fetched notes:', notes);
 
-//   fetchTasksAndNotes();
-// }, []);
+	//     } catch (err: any) {
+	//       console.error(err);
+	//       setTaskError(err.message || 'Something went wrong');
+	//       setNotes([]);
+	//     } finally {
+	//       setTaskLoading(false);
+	//     }
+	//   };
+
+	//   fetchTasksAndNotes();
+	// }, []);
 
 
 	return (
@@ -246,7 +264,7 @@ export default function Dashboard() {
 						{/* Tasks */}
 						<Card className="p-4 rounded-lg gap-2">
 							<h3 className="text-sm font-medium mb-3">Tasks</h3>
-							{/* <div className="space-y-3">
+							<div className="space-y-3">
 								{taskLoading ? (
 									<p className="text-xs text-gray-500">Loading...</p>
 								) : taskError ? (
@@ -256,9 +274,9 @@ export default function Dashboard() {
 										<TaskCard key={task.id || i} {...task} />
 									))
 								) : (
-									<p className="text-xs text-gray-500">No tasks</p>
+									<p className="text-xs text-gray-500">No tasks were found</p>
 								)}
-							</div> */}
+							</div>
 						</Card>
 
 						{/* Suggested */}
