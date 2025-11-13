@@ -1,14 +1,3 @@
-/**
- * eslint-disable @typescript-eslint/no-unused-vars
- *
- * @format
- */
-
-/**
- * eslint-disable @typescript-eslint/no-unused-vars
- *
- * @format
- */
 
 'use client';
 import { Mic, MicOff } from 'lucide-react';
@@ -18,8 +7,11 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
 	const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 	const chunksRef = useRef<Blob[]>([]);
 	const [recording, setRecording] = useState(false);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [fileUrl, setFileUrl] = useState<string | null>(null);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [error, setError] = useState<string | null>(null);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [transcriptionText, setTranscriptionText] = useState('');
 	const token = localStorage.getItem('token');
 	const [micMuted, setMicMuted] = useState(false);
