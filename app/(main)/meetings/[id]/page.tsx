@@ -28,6 +28,7 @@ export default function MeetingPage() {
 	const { id } = useParams()
 	const [searchQuery, setSearchQuery] = useState('');
 	const [token, setToken] = useState<string | null>(null);
+	const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 	useEffect(() => {
 		const storedToken = localStorage.getItem('token');
@@ -42,7 +43,7 @@ export default function MeetingPage() {
 
 			try {
 				const token = localStorage.getItem('token');
-				const response = await fetch(`http://localhost:3001/api/summary/${id}`, {
+				const response = await fetch(`${base}/api/summary/${id}`, {
 					headers: { Authorization: `Bearer ${token}` },
 				})
 
@@ -70,7 +71,7 @@ export default function MeetingPage() {
 					return
 				}
 				const token = localStorage.getItem('token');
-				const response = await fetch(`http://localhost:3001/api/transcript/${id}`, {
+				const response = await fetch(`${base}/api/transcript/${id}`, {
 					headers: { Authorization: `Bearer ${token}` },
 				})
 

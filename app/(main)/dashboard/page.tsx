@@ -79,6 +79,7 @@ export default function Dashboard() {
 	const [tasks] = useState<Task[]>([]);
 	const [taskLoading] = useState(false);
 	const [taskError] = useState<string | null>(null);
+	const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 	// // Tasks state
 	// const [tasks, setTasks] = useState<Task[]>([]);
@@ -94,7 +95,7 @@ export default function Dashboard() {
 		const fetchUpcoming = async () => {
 			setLoading(true);
 			try {
-				const res = await fetch(`http://localhost:3001/api/calendar/events`, {
+				const res = await fetch(`${base}/api/calendar/events`, {
 					method: 'GET',
 					credentials: 'include',
 					headers: { 'Content-Type': 'application/json' },
@@ -161,7 +162,7 @@ export default function Dashboard() {
 
 	//     try {
 	//       // Step 1: Fetch tasks
-	//       const res = await fetch('http://localhost:3001/api/meeting/tasks', {
+	//       const res = await fetch(`${base}/api/meeting/tasks`, {
 	//         method: 'GET',
 	//         credentials: 'include',
 	//         headers: { 'Content-Type': 'application/json' },
@@ -182,7 +183,7 @@ export default function Dashboard() {
 	//       const notesPromises = data
 	//         .filter(task => task.id) // only tasks with valid IDs
 	//         .map(task =>
-	//           fetch(`http://localhost:3001/api/meeting/${task.id}/notes`)
+	//           fetch(`${base}/api/meeting/${task.id}/notes`)
 	//             .then(res => {
 	//               if (!res.ok) throw new Error(`Failed to fetch notes for task ${task.id}`);
 	//               return res.json();

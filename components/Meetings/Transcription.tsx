@@ -12,6 +12,7 @@ interface ITranscript {
 const Transcription = () => {
     const [transcript, setTranscript] = useState<ITranscript[] | null>([])
     const token = localStorage.getItem("token");
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 
     useEffect(() => {
@@ -19,7 +20,7 @@ const Transcription = () => {
 
         const getTranscription = async () => {
             try {
-                const resposne = await fetch("http://localhost:3001/api/transcript", {
+                const resposne = await fetch(`${base}/api/transcript`, {
                     headers: { Authorization: `Bearer ${token}` },
                     method: "GET"
                 })
@@ -54,7 +55,7 @@ const Transcription = () => {
 
         }
         try {
-            const response = await fetch(`http://localhost:3001/api/transcript/${encodeURIComponent(id)}`, {
+            const response = await fetch(`${base}/api/transcript/${encodeURIComponent(id)}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 method: "DELETE"
             })

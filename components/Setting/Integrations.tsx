@@ -20,7 +20,7 @@ export interface IntegrationsHandle {
 }
 
 const API_BASE =
-	process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:3001';
+	process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 // LINE 39 AND 116
 
 const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
@@ -46,10 +46,10 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 			})
 			.catch(() => {
 				toast({
-								title: 'Something went wrong',
-								description: 'please try again',
-								variant: 'error',
-							});
+					title: 'Something went wrong',
+					description: 'please try again',
+					variant: 'error',
+				});
 			});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -73,16 +73,16 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 			setGoogleDrive(newState.googledrive);
 			setGoogleCalendar(newState.calendar);
 
-			
+
 			updateIntegrations(newState);
 
-			
+
 			window.history.replaceState({}, '', window.location.pathname);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	
+
 	const handleGoogleAuth = (service: keyof IntegrationsResponse) => {
 		window.location.href = `${API_BASE}/api/auth/google?service=${encodeURIComponent(
 			service
@@ -91,7 +91,7 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 
 	// Toggle handler
 	const handleToggle = (key: keyof IntegrationsResponse) => {
-		
+
 		if (!({ googlemeet, googledrive, calendar })[key]) {
 			handleGoogleAuth(key);
 		} else {

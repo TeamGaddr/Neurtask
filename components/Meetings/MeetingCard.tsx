@@ -23,7 +23,7 @@ type ApiMeeting = {
 	notetakerEnabled?: boolean;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '';
 
 const parseAnyDate = (dateStr?: string, timeStr?: string): Date | null => {
 	if (!dateStr && !timeStr) return null;
@@ -100,7 +100,7 @@ export default function MeetingCard({
 		setToken(storedToken)
 	}, [])
 
-	const fetchMeetings = useCallback( async () => {
+	const fetchMeetings = useCallback(async () => {
 		try {
 			setLoading(true);
 			const res = await fetch(`${API_BASE}/api/meeting`, {

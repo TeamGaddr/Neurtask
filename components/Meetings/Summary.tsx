@@ -10,13 +10,14 @@ interface ISummary {
 
 const Summary = () => {
     const [summaries, setSummaries] = useState<ISummary[] | null>([])
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
     useEffect(() => {
         const token = localStorage.getItem("token");
 
         const getSummaries = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/summary", {
+                const response = await fetch(`${base}/api/summary`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },

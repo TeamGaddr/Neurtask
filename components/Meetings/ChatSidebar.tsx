@@ -127,6 +127,7 @@ const ChatSidebar: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 	useEffect(() => {
 		if (!meetingId) return;
@@ -136,12 +137,12 @@ const ChatSidebar: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 			setError(null);
 			try {
 				const res = await fetch(
-					`http://localhost:3001/api/meeting/${encodeURIComponent(meetingId)}`
+					`${base}/api/meeting/${encodeURIComponent(meetingId)}`
 				);
 				if (!res.ok) throw new Error(`Status ${res.status}`);
 				const json = await res.json();
 				if (!cancelled) setMessages(json.messages ?? []);
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (err: any) {
 				if (!cancelled) setError(err.message || 'Failed to load messages');
 			} finally {
@@ -179,9 +180,8 @@ const ChatSidebar: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 						className='flex items-start gap-3'>
 						<div className='w-14 justify-center gap-2 flex flex-row items-center select-none'>
 							<div
-								className={`w-3.5 h-3.5 rounded-full ${
-									msg.sender?.color ?? 'bg-gray-400'
-								}`}
+								className={`w-3.5 h-3.5 rounded-full ${msg.sender?.color ?? 'bg-gray-400'
+									}`}
 								aria-hidden
 							/>
 							<div className='text-[11px] text-gray-400 tracking-wide'>

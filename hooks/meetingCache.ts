@@ -3,7 +3,7 @@
 // hooks/useMeetingsCache.ts
 import { useEffect, useRef, useState } from 'react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '';
 const TOKEN_KEY = 'token';
 const CACHE_KEY = 'meetings-cache:v1';
 const CACHE_TTL_MS = 60 * 1000; // 1 minute
@@ -187,7 +187,7 @@ export const useMeetingsCache = (opts?: {
 				// immediate refresh when user returns
 				backoffRef.current.attempts = 0;
 				backoffRef.current.nextInterval = intervalMs;
-				fetchMeetings(true).catch(() => {});
+				fetchMeetings(true).catch(() => { });
 			}
 		};
 

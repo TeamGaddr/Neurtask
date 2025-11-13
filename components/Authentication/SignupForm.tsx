@@ -483,7 +483,7 @@ export default function SignupForm({
 
 	const signup = async (credentials: SignupCredentials) => {
 		const apiUrl =
-			process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
+			process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 		const response = await fetch(`${apiUrl}/api/auth/signup`, {
 			method: 'POST',
@@ -503,9 +503,8 @@ export default function SignupForm({
 		if (data.token) {
 			const expires = new Date();
 			expires.setTime(expires.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
-			document.cookie = `auth-token=${
-				data.token
-			}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
+			document.cookie = `auth-token=${data.token
+				}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
 		}
 
 		return data;
@@ -513,7 +512,7 @@ export default function SignupForm({
 
 	const getGoogleAuthUrl = () => {
 		const apiUrl =
-			process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
+			process.env.NEXT_PUBLIC_API_BASE_URL || '';
 		return `${apiUrl}/api/auth/google`;
 	};
 

@@ -14,6 +14,7 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
     const [micMuted, setMicMuted] = useState(false);
     const micStreamRef = useRef<MediaStream | null>(null);
     // const [meetingId, setMeetingId] = useState<string | null>(null)
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 
 
@@ -92,7 +93,7 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
             form.append("filename", filename);
             form.append("meetingId", meetingId);
 
-            const res = await fetch("http://localhost:3001/api/recordmeetings/stop-recording", {
+            const res = await fetch(`${base}/api/recordmeetings/stop-recording`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
