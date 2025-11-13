@@ -3,7 +3,7 @@
 // hooks/useMeetingsCache.ts
 import { useEffect, useRef, useState } from 'react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 const TOKEN_KEY = 'token';
 const CACHE_KEY = 'meetings-cache:v1';
 const CACHE_TTL_MS = 60 * 1000; // 1 minute
@@ -68,7 +68,7 @@ export const useMeetingsCache = (opts?: {
 			localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
 		} catch (e) {
 			// ignore localStorage errors
-			// eslint-disable-next-line no-console
+
 			console.warn('useMeetingsCache writeCache error', e);
 		}
 	};
@@ -141,7 +141,7 @@ export const useMeetingsCache = (opts?: {
 				);
 				backoffRef.current.nextInterval = next;
 				setError(err?.message ?? 'Failed to fetch meetings');
-				// eslint-disable-next-line no-console
+
 				console.warn('useMeetingsCache fetch error', err);
 			}
 			return null;

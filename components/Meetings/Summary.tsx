@@ -1,63 +1,68 @@
-import { useEffect, useState } from 'react'
+/** @format */
+
+import { useEffect, useState } from 'react';
 
 interface ISummary {
-    id: string
-    date: string
-    summary: {
-        text: string
-    }[]
+	id: string;
+	date: string;
+	summary: {
+		text: string;
+	}[];
 }
 
 const Summary = () => {
-    const [summaries, setSummaries] = useState<ISummary[] | null>([])
+	const [summaries, setSummaries] = useState<ISummary[] | null>([]);
+	const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
+	useEffect(() => {
+		const token = localStorage.getItem('token');
 
-        const getSummaries = async () => {
-            try {
-                const response = await fetch("http://localhost:3001/api/summary", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                    method: "GET"
-                })
+		const getSummaries = async () => {
+			try {
+				const response = await fetch(`${apiUrl}/api/summary`, {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+					method: 'GET',
+				});
 
-                const data = await response.json()
-                setSummaries(data)
-            } catch (error) {
-                console.error("ERROR: Couldn't get any summary", error)
-                return
-            }
-        }
+				const data = await response.json();
+				setSummaries(data);
+			} catch (error) {
+				console.error("ERROR: Couldn't get any summary", error);
+				return;
+			}
+		};
 
-        getSummaries()
+		getSummaries();
+	}, []);
 
-    }, [])
+	console.log(summaries);
 
-    console.log(summaries)
+	return (
+		<div>
+			{!summaries || summaries?.length === 0 ? (
+				<p>There is no summary </p>
+			) : (
+				<div>
+					{summaries?.map((item) => {
+						return (
+							<div key={item?.id}>
+								<p>Date: {item.date}</p>
+								<br />
+								<p>
+									{item?.summary.map((item, index) => {
+										return <p key={index}>{item.text}</p>;
+									})}
+								</p>
+								<br />
+							</div>
+						);
+					})}
+				</div>
+			)}
+		</div>
+	);
+};
 
-    return (
-        <div>
-            {
-                !summaries || summaries?.length === 0 ? <p>There is no summary </p> :
-                    <div>
-                        {summaries?.map((item) => {
-                            return (
-                                <div key={item?.id}>
-                                    <p>Date: {item.date}</p><br />
-                                    <p>{item?.summary.map((item, index) => {
-                                        return (
-                                            <p key={index}>{item.text}</p>
-                                        )
-                                    })}</p><br />
-                                </div>
-                            )
-                        })}
-                    </div>
-            }
-        </div>
-    )
-}
-
-export default Summary
+export default Summary;

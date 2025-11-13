@@ -1,3 +1,5 @@
+/** @format */
+
 'use client';
 
 import { toast } from '@/hooks/use-toast';
@@ -20,7 +22,10 @@ export type LoginCredentials = {
 };
 
 export class AuthError extends Error {
-	constructor(message: string, public statusCode?: number) {
+	constructor(
+		message: string,
+		public statusCode?: number
+	) {
 		super(message);
 		this.name = 'AuthError';
 	}
@@ -56,10 +61,10 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 
 	const { setUser, setLoading: setUserLoading } = useUserStore();
 
-	const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
+	const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 	const BACKEND_ORIGIN = (() => {
 		try {
-			return new URL(API_BASE).origin;
+			return new URL(API_BASE!).origin;
 		} catch {
 			return API_BASE;
 		}
@@ -69,14 +74,14 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 		if (!token) return;
 		try {
 			localStorage.setItem('token', token);
-		} catch { }
+		} catch {}
 		try {
 			const expires = new Date();
 			expires.setTime(expires.getTime() + 30 * 24 * 60 * 60 * 1000);
 			document.cookie = `auth-token=${encodeURIComponent(
 				token
 			)}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
-		} catch { }
+		} catch {}
 	};
 
 	const login = async (credentials: LoginCredentials) => {
@@ -117,7 +122,9 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 				});
 				setFormErrors(newErrors);
 
-				const firstErrorField = Object.keys(newErrors)[0] as keyof LoginCredentials;
+				const firstErrorField = Object.keys(
+					newErrors
+				)[0] as keyof LoginCredentials;
 				const refs = { email: emailRef, password: passwordRef };
 				refs[firstErrorField]?.current?.focus();
 			}
@@ -199,7 +206,10 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 			}
 		};
 
-		const tryFetchCurrentUser = async (token: string | null, emailFallback?: string) => {
+		const tryFetchCurrentUser = async (
+			token: string | null,
+			emailFallback?: string
+		) => {
 			saveTokenBoth(token);
 
 			try {
@@ -247,7 +257,9 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 		// Message listener
 		const onMessage = async (e: MessageEvent) => {
 			try {
-				const allowedOrigins = [BACKEND_ORIGIN, window.location.origin].filter(Boolean);
+				const allowedOrigins = [BACKEND_ORIGIN, window.location.origin].filter(
+					Boolean
+				);
 				if (!allowedOrigins.includes(e.origin)) {
 					return;
 				}
@@ -268,7 +280,8 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 					toast({
 						variant: 'error',
 						title: 'Google sign-in failed',
-						description: payload?.message || 'Authentication cancelled or failed',
+						description:
+							payload?.message || 'Authentication cancelled or failed',
 					});
 				}
 			} catch (err) {
@@ -340,10 +353,14 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 
 	return (
 		<div className='w-full max-w-md mx-auto'>
-			<form onSubmit={handleSubmit} className='space-y-6'>
+			<form
+				onSubmit={handleSubmit}
+				className='space-y-6'>
 				{/* Email Field */}
 				<div>
-					<label htmlFor='email' className='block text-sm font-medium text-foreground mb-1'>
+					<label
+						htmlFor='email'
+						className='block text-sm font-medium text-foreground mb-1'>
 						Email address
 					</label>
 					<input
@@ -363,7 +380,9 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 						aria-describedby={formErrors.email ? 'email-error' : undefined}
 					/>
 					{formErrors.email && (
-						<p id='email-error' className='mt-1 text-xs text-destructive'>
+						<p
+							id='email-error'
+							className='mt-1 text-xs text-destructive'>
 							{formErrors.email}
 						</p>
 					)}
@@ -371,7 +390,9 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 
 				{/* Password Field */}
 				<div>
-					<label htmlFor='password' className='block text-sm font-medium text-foreground mb-1'>
+					<label
+						htmlFor='password'
+						className='block text-sm font-medium text-foreground mb-1'>
 						Password
 					</label>
 					<div className='relative'>
@@ -386,18 +407,26 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 							placeholder='••••••••'
 							ref={passwordRef}
 							aria-invalid={!!formErrors.password}
-							aria-describedby={formErrors.password ? 'password-error' : undefined}
+							aria-describedby={
+								formErrors.password ? 'password-error' : undefined
+							}
 						/>
 						<button
 							type='button'
 							className='absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground'
 							onClick={() => setShowPassword((prev) => !prev)}
 							aria-label={showPassword ? 'Hide password' : 'Show password'}>
-							{showPassword ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
+							{showPassword ? (
+								<EyeOff className='w-4 h-4' />
+							) : (
+								<Eye className='w-4 h-4' />
+							)}
 						</button>
 					</div>
 					{formErrors.password && (
-						<p id='password-error' className='mt-1 text-xs text-destructive'>
+						<p
+							id='password-error'
+							className='mt-1 text-xs text-destructive'>
 							{formErrors.password}
 						</p>
 					)}
@@ -412,7 +441,11 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 				</div>
 
 				{/* Submit Button */}
-				<Button type='submit' className='w-full' disabled={loading} size='lg'>
+				<Button
+					type='submit'
+					className='w-full'
+					disabled={loading}
+					size='lg'>
 					{loading ? 'Signing in...' : 'Sign in'}
 				</Button>
 			</form>
@@ -432,7 +465,9 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 				onClick={handleGoogleLogin}
 				disabled={loading}
 				size='lg'>
-				<svg className='w-4 h-4 mr-2' viewBox='0 0 24 24'>
+				<svg
+					className='w-4 h-4 mr-2'
+					viewBox='0 0 24 24'>
 					<path
 						fill='#4285F4'
 						d='M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z'
@@ -459,11 +494,12 @@ function LoginFormContent({ onSuccess }: LoginFormProps) {
 // ✅ Outer component that provides Suspense boundary
 export default function LoginForm({ onSuccess }: LoginFormProps) {
 	return (
-		<Suspense fallback={
-			<div className='w-full max-w-md mx-auto flex items-center justify-center py-12'>
-				<div className='text-muted-foreground'>Loading...</div>
-			</div>
-		}>
+		<Suspense
+			fallback={
+				<div className='w-full max-w-md mx-auto flex items-center justify-center py-12'>
+					<div className='text-muted-foreground'>Loading...</div>
+				</div>
+			}>
 			<LoginFormContent onSuccess={onSuccess} />
 		</Suspense>
 	);
