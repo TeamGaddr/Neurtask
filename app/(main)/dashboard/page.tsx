@@ -76,9 +76,9 @@ export default function Dashboard() {
 	const userId = useUserStore((state) => state.user?._id);
 	const [grouped, setGrouped] = useState<GroupedMeetings[]>([]);
 	const [loading, setLoading] = useState(false);
-	const [tasks, setTasks] = useState<Task[]>([]);
-	const [taskLoading, setTaskLoading] = useState(false);
-	const [taskError, setTaskError] = useState<string | null>(null);
+	const [tasks] = useState<Task[]>([]);
+	const [taskLoading] = useState(false);
+	const [taskError] = useState<string | null>(null);
 
 	// // Tasks state
 	// const [tasks, setTasks] = useState<Task[]>([]);
