@@ -94,10 +94,6 @@ const formatEventLabel = (ev: CalendarEvent) => {
 			dateStyle: 'medium',
 			timeStyle: 'short',
 		})
-				dateStyle: 'medium',
-				timeStyle: 'short',
-			})
-
 		: '';
 	return `${title}${date ? ` — ${date}` : ''}`;
 };
