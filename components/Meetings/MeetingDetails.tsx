@@ -30,6 +30,7 @@ const MeetingDetails: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 	const [showAudio, setShowAudio] = useState(false);
 	const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+
 	useEffect(() => {
 		if (!meetingId) return;
 		let cancelled = false;
@@ -39,6 +40,7 @@ const MeetingDetails: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 			try {
 				const res = await fetch(
 					`${base}/api/meeting/${encodeURIComponent(meetingId)}`
+
 				);
 				if (!res.ok) {
 					throw new Error(`Server responded ${res.status}`);
@@ -59,10 +61,7 @@ const MeetingDetails: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 	}, [meetingId]);
 
 	if (!meetingId) {
-		return
-		(
-			<div className='p-6 text-sm text-gray-500'>No meeting selected.</div>
-		);
+		return;
 	}
 
 	if (loading) return <div className='p-6'>Loading meeting…</div>;
@@ -95,8 +94,9 @@ const MeetingDetails: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 					)}
 
 					<div
-						className={`relative rounded-lg overflow-hidden transition-all duration-300 ${showAudio ? 'w-full h-28' : 'w-[280px] h-[150px]'
-							}`}
+						className={`relative rounded-lg overflow-hidden transition-all duration-300 ${
+							showAudio ? 'w-full h-28' : 'w-[280px] h-[150px]'
+						}`}
 						onClick={() => {
 							if (audioSrc) setShowAudio(true);
 						}}

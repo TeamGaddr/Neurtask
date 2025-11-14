@@ -1,7 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/** @format */
+/**
+ * eslint-disable @typescript-eslint/no-explicit-any
+ *
+ * @format
+ */
 
-// /** @format */
+/**
+ * eslint-disable @typescript-eslint/no-explicit-any
+ *
+ * @format
+ */
 
 'use client';
 
@@ -85,10 +92,10 @@ const OngoingMeeting: React.FC = () => {
 				});
 				if (!res.ok) throw new Error(`Status ${res.status}`);
 				const json = await res.json();
-				const arr = Array.isArray(json) ? json : json?.meetings ?? [];
+				const arr = Array.isArray(json) ? json : (json?.meetings ?? []);
 				setMeetings(arr);
 			} catch (err) {
-				console.log(err)
+				console.log(err);
 				setMeetings([]);
 			} finally {
 				setLoading(false);
@@ -101,7 +108,7 @@ const OngoingMeeting: React.FC = () => {
 	const ongoingMeeting = useMemo(() => {
 		const now = new Date();
 		return (
-			meetings.find((m: any) => {
+			meetings.find((m) => {
 				if (!m.startDateTime || !m.endDateTime) return false;
 				const s = new Date(m.startDateTime);
 				const e = new Date(m.endDateTime);
@@ -149,12 +156,13 @@ const OngoingMeeting: React.FC = () => {
 				title: 'AI joined',
 				description: json?.summary
 					? String(json.summary).slice(0, 140) +
-					(String(json.summary).length > 140 ? '…' : '')
+						(String(json.summary).length > 140 ? '…' : '')
 					: 'AI joined the meeting',
 			});
 
 			// refresh cache silently
 			// refresh(false).catch(() => { });
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
 			toast({
 				variant: 'error',
@@ -166,6 +174,7 @@ const OngoingMeeting: React.FC = () => {
 		}
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const joinMeeting = (meeting: any | null) => {
 		if (!meeting) {
 			toast({
@@ -181,7 +190,7 @@ const OngoingMeeting: React.FC = () => {
 			try {
 				window.open(meeting.meetingLink, '_blank', 'noopener,noreferrer');
 			} catch (err) {
-				console.log(err)
+				console.log(err);
 			}
 		} else {
 			// no meeting link - user still requested join; let backend try fallback
@@ -243,10 +252,11 @@ const OngoingMeeting: React.FC = () => {
 						onClick={() => joinMeeting(ongoingMeeting)}
 						disabled={!ongoingMeeting || aiJoining}
 						aria-disabled={!ongoingMeeting || aiJoining}
-						className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm ${ongoingMeeting && !aiJoining
-							? 'bg-[#dafd3c] hover:bg-[#c9ef2a] text-black'
-							: 'bg-[#f0f3d6] text-gray-500 cursor-not-allowed'
-							}`}
+						className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm ${
+							ongoingMeeting && !aiJoining
+								? 'bg-[#dafd3c] hover:bg-[#c9ef2a] text-black'
+								: 'bg-[#f0f3d6] text-gray-500 cursor-not-allowed'
+						}`}
 						aria-live='polite'>
 						{aiJoining ? (
 							<>
@@ -256,7 +266,11 @@ const OngoingMeeting: React.FC = () => {
 							'Join Meeting'
 						)}
 					</Button>
-					{ongoingMeeting ? <MeetingRecorder meetingId={ongoingMeeting.meetingId} /> : ""}
+					{ongoingMeeting ? (
+						<MeetingRecorder meetingId={ongoingMeeting.meetingId} />
+					) : (
+						''
+					)}
 
 					{/* Notetaker: dark pill */}
 					<Button
@@ -276,13 +290,16 @@ const OngoingMeeting: React.FC = () => {
 				initialMeeting={
 					ongoingMeeting
 						? {
-							id: ongoingMeeting._id,
-							title: ongoingMeeting.title,
-							meetingLink: ongoingMeeting.meetingLink,
-							calendarEventId: ongoingMeeting.calendarEventId != null ? String(ongoingMeeting.calendarEventId) : undefined,
-							startDateTime: ongoingMeeting.startDateTime,
-							endDateTime: ongoingMeeting.endDateTime,
-						}
+								id: ongoingMeeting._id,
+								title: ongoingMeeting.title,
+								meetingLink: ongoingMeeting.meetingLink,
+								calendarEventId:
+									ongoingMeeting.calendarEventId != null
+										? String(ongoingMeeting.calendarEventId)
+										: undefined,
+								startDateTime: ongoingMeeting.startDateTime,
+								endDateTime: ongoingMeeting.endDateTime,
+							}
 						: undefined
 				}
 			/>
@@ -291,4 +308,3 @@ const OngoingMeeting: React.FC = () => {
 };
 
 export default OngoingMeeting;
-

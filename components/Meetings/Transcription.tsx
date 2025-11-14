@@ -1,12 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState } from 'react'
+/**
+ * eslint-disable @typescript-eslint/no-unused-vars
+ *
+ * @format
+ */
+
+import { useEffect, useState } from 'react';
 
 interface ITranscript {
-    id: string
-    date: string
-    transcript: {
-        text: string
-    }[]
+	id: string;
+	date: string;
+	transcript: {
+		text: string;
+	}[];
 }
 
 const Transcription = () => {

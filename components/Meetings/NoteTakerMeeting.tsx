@@ -1,7 +1,14 @@
+/** @format */
+
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import {
+	Dialog,
+	DialogContent,
+	DialogTitle,
+	DialogDescription,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
 	Select,
@@ -18,9 +25,10 @@ import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { DateTimePicker } from '@/components/ui/datetimepicker';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const BACKEND_ORIGIN = (() => {
 	try {
-		return new URL(API_BASE).origin;
+		return new URL(API_BASE!).origin;
 	} catch {
 		return API_BASE;
 	}
@@ -86,6 +94,10 @@ const formatEventLabel = (ev: CalendarEvent) => {
 			dateStyle: 'medium',
 			timeStyle: 'short',
 		})
+				dateStyle: 'medium',
+				timeStyle: 'short',
+			})
+
 		: '';
 	return `${title}${date ? ` — ${date}` : ''}`;
 };
@@ -132,7 +144,10 @@ const SkeletonRow: React.FC<{ className?: string }> = ({ className = '' }) => (
 );
 
 // Helper: Combine Date + time string (HH:mm) to ISO string
-const combineDateAndTime = (date: Date | undefined, time: string): string | null => {
+const combineDateAndTime = (
+	date: Date | undefined,
+	time: string
+): string | null => {
 	if (!date || !time) return null;
 	const [hours, minutes] = time.split(':').map(Number);
 	if (isNaN(hours) || isNaN(minutes)) return null;
@@ -554,7 +569,10 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 					});
 					onOpenChange(false);
 				} catch (err) {
-					const errorMessage = err instanceof Error ? err.message : 'Failed to save meeting with notetaker';
+					const errorMessage =
+						err instanceof Error
+							? err.message
+							: 'Failed to save meeting with notetaker';
 					console.error('Auto-save notetaker error', err);
 					setError(errorMessage);
 					toast({
@@ -586,8 +604,8 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 			<DialogContent
 				className='max-w-md p-0 gap-0 bg-white rounded-2xl'
 				style={{ overflow: 'hidden' }}>
-				<DialogTitle className="sr-only">Event Details</DialogTitle>
-				<DialogDescription className="sr-only">
+				<DialogTitle className='sr-only'>Event Details</DialogTitle>
+				<DialogDescription className='sr-only'>
 					Create or select a meeting event with optional notetaker
 				</DialogDescription>
 				<div className='px-14 py-8'>
@@ -633,26 +651,26 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 						{/* Start Date & Time */}
 						<div className='mb-5'>
 							<DateTimePicker
-								label="Start"
+								label='Start'
 								date={startDate}
 								onDateChange={setStartDate}
 								time={startTime}
 								onTimeChange={setStartTime}
 								disabled={loading}
-								id="start-datetime"
+								id='start-datetime'
 							/>
 						</div>
 
 						{/* End Date & Time */}
 						<div className='mb-5'>
 							<DateTimePicker
-								label="End"
+								label='End'
 								date={endDate}
 								onDateChange={setEndDate}
 								time={endTime}
 								onTimeChange={setEndTime}
 								disabled={loading}
-								id="end-datetime"
+								id='end-datetime'
 							/>
 						</div>
 
@@ -695,8 +713,8 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 									{!eventsLoading && events.length === 0 ? (
 										<div className='mb-3 p-3 rounded-md bg-yellow-50 border border-yellow-200'>
 											<p className='text-sm text-yellow-800'>
-												You don&apos;t have any calendar events. You can still create
-												a meeting manually below.
+												You don&apos;t have any calendar events. You can still
+												create a meeting manually below.
 											</p>
 										</div>
 									) : null}

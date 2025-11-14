@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
-import React, { useRef, useState } from "react";
+
+'use client';
 import { Mic, MicOff } from 'lucide-react';
+import React, { useRef, useState } from 'react';
 
 export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -150,4 +150,3 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
             </div>
         </div >
     );
-}

@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
+/** @format */
+
+import { useEffect, useState } from 'react';
 
 interface ISummary {
-    id: string
-    date: string
-    summary: {
-        text: string
-    }[]
+	id: string;
+	date: string;
+	summary: {
+		text: string;
+	}[];
 }
 
 const Summary = () => {
@@ -61,4 +63,4 @@ const Summary = () => {
     )
 }
 
-export default Summary
+export default Summary;

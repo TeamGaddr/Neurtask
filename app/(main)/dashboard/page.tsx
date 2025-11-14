@@ -1,3 +1,5 @@
+/** @format */
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -6,7 +8,6 @@ import { useUserStore } from '@/lib/store/userStore';
 import { format, isAfter, isToday, isTomorrow, parseISO } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-
 
 interface GroupedMeetings {
 	day: string;
@@ -25,8 +26,6 @@ interface GroupedMeetings {
 // 	transcript: string;   // transcript text
 // };
 
-
-
 const UpcomingCard = ({ day, label, month, events }: GroupedMeetings) => (
 	<Card className='bg-white p-4 rounded-lg relative'>
 		<div className='flex gap-8'>
@@ -43,10 +42,18 @@ const UpcomingCard = ({ day, label, month, events }: GroupedMeetings) => (
 					const title = eventStr.substring(0, lastSpaceIndex - 12);
 					const time = eventStr.substring(lastSpaceIndex - 12);
 					return (
-						<div key={idx} className="mb-4"> {/* spacing between cards */}
-							<div className="flex flex-col">
-								<h4 className="text-sm font-medium">{title}</h4>
-								<p className="text-xs text-gray-500" style={{ marginTop: '4px' }}>{time}</p>
+						<div
+							key={idx}
+							className='mb-4'>
+							{' '}
+							{/* spacing between cards */}
+							<div className='flex flex-col'>
+								<h4 className='text-sm font-medium'>{title}</h4>
+								<p
+									className='text-xs text-gray-500'
+									style={{ marginTop: '4px' }}>
+									{time}
+								</p>
 							</div>
 						</div>
 					);
@@ -63,10 +70,12 @@ interface Task {
 }
 
 const TaskCard = ({ title, date }: Task) => (
-	<Card className="bg-white p-3 rounded-md shadow-sm">
-		<div className="flex justify-between items-center">
-			<h4 className="text-sm font-medium text-gray-800">{title}</h4>
-			<p className="text-xs text-gray-500">{format(parseISO(date), 'yyyy-MM-dd')}</p>
+	<Card className='bg-white p-3 rounded-md shadow-sm'>
+		<div className='flex justify-between items-center'>
+			<h4 className='text-sm font-medium text-gray-800'>{title}</h4>
+			<p className='text-xs text-gray-500'>
+				{format(parseISO(date), 'yyyy-MM-dd')}
+			</p>
 		</div>
 	</Card>
 );
@@ -94,6 +103,7 @@ export default function Dashboard() {
 
 		const fetchUpcoming = async () => {
 			setLoading(true);
+			const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 			try {
 				const res = await fetch(`${base}/api/calendar/events`, {
 					method: 'GET',
@@ -119,7 +129,7 @@ export default function Dashboard() {
 						id: item.id,
 						title: item.summary || 'Untitled',
 						startTime: item.start.dateTime,
-						endTime: item.end.dateTime
+						endTime: item.end.dateTime,
 					});
 				});
 
@@ -220,7 +230,6 @@ export default function Dashboard() {
 	//   fetchTasksAndNotes();
 	// }, []);
 
-
 	return (
 		<>
 			{/* <div className='bg-[#fff] shadow-sm w-full p-5'>
@@ -261,21 +270,24 @@ export default function Dashboard() {
 					</Card>
 
 					{/* Right Grid */}
-					<div className="grid grid-cols-1 gap-6 md:grid-cols-1 md:grid-rows-2 ">
+					<div className='grid grid-cols-1 gap-6 md:grid-cols-1 md:grid-rows-2 '>
 						{/* Tasks */}
-						<Card className="p-4 rounded-lg gap-2">
-							<h3 className="text-sm font-medium mb-3">Tasks</h3>
-							<div className="space-y-3">
+						<Card className='p-4 rounded-lg gap-2'>
+							<h3 className='text-sm font-medium mb-3'>Tasks</h3>
+							<div className='space-y-3'>
 								{taskLoading ? (
-									<p className="text-xs text-gray-500">Loading...</p>
+									<p className='text-xs text-gray-500'>Loading...</p>
 								) : taskError ? (
-									<p className="text-xs text-red-500">{taskError}</p>
+									<p className='text-xs text-red-500'>{taskError}</p>
 								) : tasks.length ? (
 									tasks.slice(0, 4).map((task, i) => (
-										<TaskCard key={task.id || i} {...task} />
+										<TaskCard
+											key={task.id || i}
+											{...task}
+										/>
 									))
 								) : (
-									<p className="text-xs text-gray-500">No tasks were found</p>
+									<p className='text-xs text-gray-500'>No tasks were found</p>
 								)}
 							</div>
 						</Card>

@@ -129,6 +129,7 @@ const ChatSidebar: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 	const [error, setError] = useState<string | null>(null);
 	const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+
 	useEffect(() => {
 		if (!meetingId) return;
 		let cancelled = false;
@@ -138,6 +139,7 @@ const ChatSidebar: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 			try {
 				const res = await fetch(
 					`${base}/api/meeting/${encodeURIComponent(meetingId)}`
+
 				);
 				if (!res.ok) throw new Error(`Status ${res.status}`);
 				const json = await res.json();

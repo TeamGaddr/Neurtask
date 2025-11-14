@@ -1,3 +1,5 @@
+/** @format */
+
 import { toast } from '@/hooks/use-toast';
 import axios from 'axios';
 import React, {
@@ -23,6 +25,7 @@ const API_BASE =
 	process.env.NEXT_PUBLIC_API_BASE_URL;
 // LINE 39 AND 116
 
+
 const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 	const [googlemeet, setGoogleMeet] = useState(false);
 	const [googledrive, setGoogleDrive] = useState(false);
@@ -34,9 +37,9 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 		typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
 	useEffect(() => {
-		//THIS ENDPOINT IS 404 
+		//THIS ENDPOINT IS 404
 		axios
-			.get<IntegrationsResponse>(`${API_BASE}/api/integrations/status`, {
+			.get<IntegrationsResponse>(`${apiUrl}/api/integrations/status`, {
 				headers: token ? { Authorization: `Bearer ${token}` } : undefined,
 			})
 			.then(({ data }) => {
@@ -77,14 +80,14 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 			updateIntegrations(newState);
 
 
+
 			window.history.replaceState({}, '', window.location.pathname);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-
 	const handleGoogleAuth = (service: keyof IntegrationsResponse) => {
-		window.location.href = `${API_BASE}/api/auth/google?service=${encodeURIComponent(
+		window.location.href = `${apiUrl}/api/auth/google?service=${encodeURIComponent(
 			service
 		)}`;
 	};
@@ -93,6 +96,7 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 	const handleToggle = (key: keyof IntegrationsResponse) => {
 
 		if (!({ googlemeet, googledrive, calendar })[key]) {
+
 			handleGoogleAuth(key);
 		} else {
 			const newState: IntegrationsResponse = {
@@ -111,7 +115,7 @@ const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {
 
 	const updateIntegrations = async (newState: IntegrationsResponse) => {
 		try {
-			await axios.put(`${API_BASE}/api/integrations/update`, newState, {
+			await axios.put(`${apiUrl}/api/integrations/update`, newState, {
 				headers: {
 					...(token ? { Authorization: `Bearer ${token}` } : {}),
 					'Content-Type': 'application/json',

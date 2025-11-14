@@ -68,7 +68,7 @@ export const useMeetingsCache = (opts?: {
 			localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
 		} catch (e) {
 			// ignore localStorage errors
-			// eslint-disable-next-line no-console
+
 			console.warn('useMeetingsCache writeCache error', e);
 		}
 	};
@@ -141,7 +141,7 @@ export const useMeetingsCache = (opts?: {
 				);
 				backoffRef.current.nextInterval = next;
 				setError(err?.message ?? 'Failed to fetch meetings');
-				// eslint-disable-next-line no-console
+
 				console.warn('useMeetingsCache fetch error', err);
 			}
 			return null;
