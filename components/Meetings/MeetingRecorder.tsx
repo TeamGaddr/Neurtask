@@ -1,7 +1,7 @@
 
 'use client';
 import { Mic, MicOff } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import { useRef, useState,useEffect } from 'react';
 
 export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -10,13 +10,17 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
     const [fileUrl, setFileUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [transcriptionText, setTranscriptionText] = useState("")
-    const token = localStorage.getItem("token");
+    const [token, setToken] = useState<string | null>(null);
     const [micMuted, setMicMuted] = useState(false);
     const micStreamRef = useRef<MediaStream | null>(null);
     // const [meetingId, setMeetingId] = useState<string | null>(null)
     const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setToken(localStorage.getItem("token"));
+        }
+    }, []);
 
     async function start() {
         try {
@@ -148,5 +152,6 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
 
                 )}
             </div>
-        </div >
+        </div>
     );
+}
