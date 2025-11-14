@@ -12,7 +12,7 @@ interface ITranscript {
 const Transcription = () => {
     const [transcript, setTranscript] = useState<ITranscript[] | null>([])
     const token = localStorage.getItem("token");
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 
     useEffect(() => {

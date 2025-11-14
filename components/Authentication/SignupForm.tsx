@@ -483,7 +483,7 @@ export default function SignupForm({
 
 	const signup = async (credentials: SignupCredentials) => {
 		const apiUrl =
-			process.env.NEXT_PUBLIC_API_BASE_URL || '';
+			process.env.NEXT_PUBLIC_API_BASE_URL;
 
 		const response = await fetch(`${apiUrl}/api/auth/signup`, {
 			method: 'POST',
@@ -512,7 +512,7 @@ export default function SignupForm({
 
 	const getGoogleAuthUrl = () => {
 		const apiUrl =
-			process.env.NEXT_PUBLIC_API_BASE_URL || '';
+			process.env.NEXT_PUBLIC_API_BASE_URL;
 		return `${apiUrl}/api/auth/google`;
 	};
 

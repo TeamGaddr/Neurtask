@@ -79,7 +79,7 @@ export default function Dashboard() {
 	const [tasks] = useState<Task[]>([]);
 	const [taskLoading] = useState(false);
 	const [taskError] = useState<string | null>(null);
-	const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+	const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 	// // Tasks state
 	// const [tasks, setTasks] = useState<Task[]>([]);

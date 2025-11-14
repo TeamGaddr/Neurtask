@@ -18,7 +18,7 @@ function PasswordResetConfirmContent() {
 			return;
 		}
 
-		const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+		const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 		console.log(
 			'Calling backend confirm:',
 			`${API_BASE}/api/auth/confirm-password-reset?token=${token}`
@@ -59,7 +59,7 @@ function PasswordResetConfirmContent() {
 
 export default function PasswordResetConfirm() {
 	return (
-		<Suspense 
+		<Suspense
 			fallback={
 				<div className='min-h-screen flex items-center justify-center bg-gray-100 px-4'>
 					<div className='bg-white p-8 rounded-2xl shadow-md max-w-md w-full text-center'>

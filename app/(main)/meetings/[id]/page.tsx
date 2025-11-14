@@ -28,7 +28,7 @@ export default function MeetingPage() {
 	const { id } = useParams()
 	const [searchQuery, setSearchQuery] = useState('');
 	const [token, setToken] = useState<string | null>(null);
-	const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+	const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 	useEffect(() => {
 		const storedToken = localStorage.getItem('token');

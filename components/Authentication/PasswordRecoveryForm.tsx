@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function PasswordRecoveryForm() {
 	const [email, setEmail] = useState('');
@@ -37,7 +37,7 @@ export default function PasswordRecoveryForm() {
 				throw new Error(err.message || 'Something went wrong');
 			}
 			setSuccess(true);
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
 			setError(err.message || 'An error occurred');
 		} finally {

@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const TASK_TYPES = [
 	{ label: 'Summary', icon: FileText },
@@ -135,11 +135,10 @@ export default function NewTaskDialog({
 									key={label}
 									type='button'
 									onClick={() => setActiveType(label)}
-									className={`flex flex-col items-center justify-center p-3 rounded-lg text-xs border transition-all ${
-										isActive
+									className={`flex flex-col items-center justify-center p-3 rounded-lg text-xs border transition-all ${isActive
 											? 'bg-white text-black border-purple-600'
 											: 'bg-gray-100 text-gray-400 border-gray-200 cursor-default'
-									}`}>
+										}`}>
 									<Icon className='w-5 h-5 mb-1' />
 									{label}
 								</button>
@@ -170,8 +169,8 @@ export default function NewTaskDialog({
 									className='bg-gray-100 text-gray-800 flex justify-center text-sm p-2.5 rounded-lg shadow-inner w-full text-left focus:outline-none focus:ring-1 focus:ring-gray-300'>
 									{selectedDays.length > 0
 										? selectedDays
-												.map((d) => d.replace('Every ', '').slice(0, 3))
-												.join(', ')
+											.map((d) => d.replace('Every ', '').slice(0, 3))
+											.join(', ')
 										: 'Never'}
 								</button>
 								{repeatDaysOpen && (

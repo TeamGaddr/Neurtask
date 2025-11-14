@@ -127,7 +127,7 @@ const ChatSidebar: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+	const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 	useEffect(() => {
 		if (!meetingId) return;

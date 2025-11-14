@@ -20,7 +20,7 @@ export interface IntegrationsHandle {
 }
 
 const API_BASE =
-	process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
+	process.env.NEXT_PUBLIC_API_BASE_URL;
 // LINE 39 AND 116
 
 const Integrations = forwardRef<IntegrationsHandle>((props, ref) => {

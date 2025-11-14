@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import ProfileEdit from "./ProfileEdit";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const General = forwardRef((props, ref) => {
   const [state, setState] = useState({

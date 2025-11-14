@@ -9,7 +9,7 @@ import React, { useEffect } from 'react';
 
 export default function GoogleSignInButton() {
 	const router = useRouter();
-	const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+	const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 	useEffect(() => {
 		const onMessage = async (e: MessageEvent) => {

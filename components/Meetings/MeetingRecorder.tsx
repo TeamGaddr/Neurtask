@@ -14,7 +14,7 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
     const [micMuted, setMicMuted] = useState(false);
     const micStreamRef = useRef<MediaStream | null>(null);
     // const [meetingId, setMeetingId] = useState<string | null>(null)
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 
 

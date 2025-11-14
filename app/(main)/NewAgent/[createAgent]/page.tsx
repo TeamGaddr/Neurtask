@@ -13,7 +13,7 @@ import { toast } from '@/hooks/use-toast';
 import { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const AgentSchema = z.object({
 	name: z.string().min(1, 'Name is required'),
@@ -180,18 +180,17 @@ export default function Page() {
 						<Button
 							onClick={handleNext}
 							disabled={loading}
-							className={`px-6 w-[8rem] py-2 text-sm font-medium rounded-lg transition-all ${
-								loading
+							className={`px-6 w-[8rem] py-2 text-sm font-medium rounded-lg transition-all ${loading
 									? 'bg-gray-300 text-gray-500'
 									: 'bg-black text-white hover:bg-gray-800'
-							}`}>
+								}`}>
 							{loading
 								? isLast
 									? 'Creating…'
 									: 'Loading…'
 								: isLast
-								? 'Create'
-								: 'Next'}
+									? 'Create'
+									: 'Next'}
 						</Button>
 					</div>
 				</>
@@ -208,18 +207,17 @@ export default function Page() {
 						<Button
 							onClick={handleNext}
 							disabled={loading}
-							className={`px-6 w-full py-2 text-sm font-medium rounded-lg transition-all ${
-								loading
+							className={`px-6 w-full py-2 text-sm font-medium rounded-lg transition-all ${loading
 									? 'bg-gray-300 text-gray-500'
 									: 'bg-black text-white hover:bg-gray-800'
-							}`}>
+								}`}>
 							{loading
 								? isLast
 									? 'Creating…'
 									: 'Loading…'
 								: isLast
-								? 'Create'
-								: 'Next'}
+									? 'Create'
+									: 'Next'}
 						</Button>
 					</div>
 				</div>

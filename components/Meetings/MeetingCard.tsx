@@ -23,7 +23,7 @@ type ApiMeeting = {
 	notetakerEnabled?: boolean;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const parseAnyDate = (dateStr?: string, timeStr?: string): Date | null => {
 	if (!dateStr && !timeStr) return null;

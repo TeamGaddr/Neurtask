@@ -10,7 +10,7 @@ interface ISummary {
 
 const Summary = () => {
     const [summaries, setSummaries] = useState<ISummary[] | null>([])
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     useEffect(() => {
         const token = localStorage.getItem("token");

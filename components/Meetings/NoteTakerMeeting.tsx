@@ -17,7 +17,7 @@ import { Check, Link, X } from 'lucide-react';
 import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { DateTimePicker } from '@/components/ui/datetimepicker';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 const BACKEND_ORIGIN = (() => {
 	try {
 		return new URL(API_BASE).origin;

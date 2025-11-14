@@ -28,7 +28,7 @@ const MeetingDetails: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [showAudio, setShowAudio] = useState(false);
-	const base = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+	const base = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 	useEffect(() => {
 		if (!meetingId) return;
