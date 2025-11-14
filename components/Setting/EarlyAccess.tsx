@@ -1,3 +1,5 @@
+
+
 /**
  * eslint-disable @typescript-eslint/ban-ts-comment
  *
@@ -45,10 +47,10 @@ const EarlyAccess = forwardRef((props, ref) => {
 			prev.map((task, i) =>
 				i === index
 					? {
-							...task,
-							completed: !task.completed,
-							action: !task.completed ? 'Completed' : task.originalAction,
-						}
+						...task,
+						completed: !task.completed,
+						action: !task.completed ? 'Completed' : task.originalAction,
+					}
 					: task
 			)
 		);
@@ -59,14 +61,13 @@ const EarlyAccess = forwardRef((props, ref) => {
 		console.log('Saving Early Access tasks...', tasks);
 
 		// THIS IS WRONG URL
-		// const API_URL = 'https://your-backend-url.com/api/auth'; // Adjust as needed
-		const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+		const API_URL = 'https://your-backend-url.com/api/auth'; // Adjust as needed
 		//const API_URL = 'http://localhost:3001';
 		const token = localStorage.getItem('token');
 
 		try {
 			await axios.put(
-				`${apiUrl}/updateEarlyAccessTasks`,
+				`${API_URL}/updateEarlyAccessTasks`,
 				{ tasks },
 				{
 					headers: {
@@ -105,9 +106,8 @@ const EarlyAccess = forwardRef((props, ref) => {
 							Unlock Progress
 						</h1>
 						<p className='text-sm text-[#6019F0]'>
-							{`${tasks.filter((t) => t.completed).length}/${
-								tasks.length
-							} Complete`}
+							{`${tasks.filter((t) => t.completed).length}/${tasks.length
+								} Complete`}
 						</p>
 					</div>
 
@@ -115,11 +115,10 @@ const EarlyAccess = forwardRef((props, ref) => {
 						<div
 							className='bg-[#6019F0] h-1.5 rounded-full'
 							style={{
-								width: `${
-									(tasks.filter((task) => task.completed).length /
-										tasks.length) *
+								width: `${(tasks.filter((task) => task.completed).length /
+									tasks.length) *
 									100
-								}%`,
+									}%`,
 							}}></div>
 					</div>
 
@@ -139,9 +138,8 @@ const EarlyAccess = forwardRef((props, ref) => {
 							return (
 								<div
 									key={index}
-									className={`flex items-start p-4 border rounded-lg ${
-										task.completed ? 'bg-[#F5F5F5]' : 'bg-white'
-									}`}>
+									className={`flex items-start p-4 border rounded-lg ${task.completed ? 'bg-[#F5F5F5]' : 'bg-white'
+										}`}>
 									<div
 										onClick={() => toggleComplete(index)}
 										className={`h-5 w-5 flex items-center justify-center rounded-full mt-1 cursor-pointer ${circleClasses}`}>
@@ -152,20 +150,18 @@ const EarlyAccess = forwardRef((props, ref) => {
 											{task.label}
 										</span>
 										<p
-											className={`text-xs ${
-												task.completed ? 'text-gray-500' : 'text-purple-600'
-											}`}>
+											className={`text-xs ${task.completed ? 'text-gray-500' : 'text-purple-600'
+												}`}>
 											{task.desc}
 										</p>
 									</div>
 									{task.action ? (
 										<button
 											onClick={() => toggleComplete(index)}
-											className={`text-sm font-medium ${
-												task.completed
-													? 'text-gray-500 cursor-default'
-													: 'text-purple-600 hover:underline'
-											}`}>
+											className={`text-sm font-medium ${task.completed
+												? 'text-gray-500 cursor-default'
+												: 'text-purple-600 hover:underline'
+												}`}>
 											{task.action}
 										</button>
 									) : null}

@@ -23,7 +23,7 @@ type ApiMeeting = {
 	notetakerEnabled?: boolean;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
 
 const parseAnyDate = (dateStr?: string, timeStr?: string): Date | null => {
 	if (!dateStr && !timeStr) return null;
@@ -92,15 +92,15 @@ export default function MeetingCard({
 	const user = useUserStore((s) => s.user);
 	const userEmail = user?.email;
 	const router = useRouter();
-	const [token, setToken] = useState<string | null>(null);
+	const [token, setToken] = useState<string | null>(null)
 	// const token = localStorage.getItem('token');
 
 	useEffect(() => {
-		const storedToken = localStorage.getItem('token');
-		setToken(storedToken);
-	}, []);
+		const storedToken = localStorage.getItem("token");
+		setToken(storedToken)
+	}, [])
 
-	const fetchMeetings = useCallback(async () => {
+	const fetchMeetings = useCallback( async () => {
 		try {
 			setLoading(true);
 			const res = await fetch(`${API_BASE}/api/meeting`, {
@@ -219,14 +219,14 @@ export default function MeetingCard({
 			prev.map((p) =>
 				p._id === meeting._id
 					? {
-							...p,
-							attendees: willAttend
-								? [...(p.attendees ?? []), { email: userEmail }]
-								: (p.attendees ?? []).filter(
-										(a) =>
-											(a.email ?? '').toLowerCase() !== userEmail.toLowerCase()
-									),
-						}
+						...p,
+						attendees: willAttend
+							? [...(p.attendees ?? []), { email: userEmail }]
+							: (p.attendees ?? []).filter(
+								(a) =>
+									(a.email ?? '').toLowerCase() !== userEmail.toLowerCase()
+							),
+					}
 					: p
 			)
 		);
@@ -311,11 +311,10 @@ export default function MeetingCard({
 						handleClick();
 					}
 				}}
-				className={`flex items-center justify-between py-4 border-b last:border-b-0 rounded-md focus:outline-none ${
-					clickable
-						? 'cursor-pointer hover:shadow-sm focus:ring-2 focus:ring-primary'
-						: 'opacity-75 cursor-not-allowed'
-				}`}
+				className={`flex items-center justify-between py-4 border-b last:border-b-0 rounded-md focus:outline-none ${clickable
+					? 'cursor-pointer hover:shadow-sm focus:ring-2 focus:ring-primary'
+					: 'opacity-75 cursor-not-allowed'
+					}`}
 				aria-disabled={!clickable}>
 				<div className='flex items-center gap-4 min-w-0'>
 					<div className='w-20 h-20 bg-gray-200 rounded-md flex flex-col items-center justify-center text-sm font-medium text-gray-700 shadow-sm flex-shrink-0'>

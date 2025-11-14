@@ -127,7 +127,6 @@ const ChatSidebar: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 	useEffect(() => {
 		if (!meetingId) return;
@@ -137,12 +136,12 @@ const ChatSidebar: React.FC<{ meetingId?: string }> = ({ meetingId }) => {
 			setError(null);
 			try {
 				const res = await fetch(
-					`${apiUrl}/api/meeting/${encodeURIComponent(meetingId)}`
+					`http://localhost:3001/api/meeting/${encodeURIComponent(meetingId)}`
 				);
 				if (!res.ok) throw new Error(`Status ${res.status}`);
 				const json = await res.json();
 				if (!cancelled) setMessages(json.messages ?? []);
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (err: any) {
 				if (!cancelled) setError(err.message || 'Failed to load messages');
 			} finally {

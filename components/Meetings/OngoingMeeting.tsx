@@ -4,11 +4,9 @@
  * @format
  */
 
-/**
- * eslint-disable @typescript-eslint/no-explicit-any
- *
- * @format
- */
+/** @format */
+
+// /** @format */
 
 'use client';
 
@@ -20,7 +18,7 @@ import React, { useMemo, useState } from 'react';
 import MeetingRecorder from './MeetingRecorder';
 import NoteTaker from './NoteTakerMeeting';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
 const TOKEN_KEY = 'token';
 const getAppToken = () => {
 	try {
@@ -162,7 +160,6 @@ const OngoingMeeting: React.FC = () => {
 
 			// refresh cache silently
 			// refresh(false).catch(() => { });
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
 			toast({
 				variant: 'error',
@@ -174,7 +171,6 @@ const OngoingMeeting: React.FC = () => {
 		}
 	};
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const joinMeeting = (meeting: any | null) => {
 		if (!meeting) {
 			toast({

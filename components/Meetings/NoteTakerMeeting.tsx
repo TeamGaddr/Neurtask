@@ -1,14 +1,7 @@
-/** @format */
-
 'use client';
 
 import { Button } from '@/components/ui/button';
-import {
-	Dialog,
-	DialogContent,
-	DialogTitle,
-	DialogDescription,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
 	Select,
@@ -24,10 +17,10 @@ import { Check, Link, X } from 'lucide-react';
 import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { DateTimePicker } from '@/components/ui/datetimepicker';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3001';
 const BACKEND_ORIGIN = (() => {
 	try {
-		return new URL(API_BASE!).origin;
+		return new URL(API_BASE).origin;
 	} catch {
 		return API_BASE;
 	}
@@ -92,7 +85,7 @@ const formatEventLabel = (ev: CalendarEvent) => {
 		? new Date(start).toLocaleString([], {
 				dateStyle: 'medium',
 				timeStyle: 'short',
-			})
+		  })
 		: '';
 	return `${title}${date ? ` — ${date}` : ''}`;
 };
@@ -100,7 +93,7 @@ const formatEventLabel = (ev: CalendarEvent) => {
 // SSR-safe token getter
 const getAppToken = (): string | null => {
 	if (typeof window === 'undefined') return null;
-
+	
 	try {
 		const fromLs = localStorage.getItem(TOKEN_KEY);
 		if (fromLs) return fromLs;
@@ -116,13 +109,13 @@ const getAppToken = (): string | null => {
 // SSR-safe localStorage setter
 const setAppToken = (token: string): void => {
 	if (typeof window === 'undefined') return;
-
+	
 	try {
 		localStorage.setItem(TOKEN_KEY, token);
 	} catch (err) {
 		console.warn('Failed to persist token', err);
 	}
-
+	
 	try {
 		const expires = new Date();
 		expires.setTime(expires.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -139,14 +132,11 @@ const SkeletonRow: React.FC<{ className?: string }> = ({ className = '' }) => (
 );
 
 // Helper: Combine Date + time string (HH:mm) to ISO string
-const combineDateAndTime = (
-	date: Date | undefined,
-	time: string
-): string | null => {
+const combineDateAndTime = (date: Date | undefined, time: string): string | null => {
 	if (!date || !time) return null;
 	const [hours, minutes] = time.split(':').map(Number);
 	if (isNaN(hours) || isNaN(minutes)) return null;
-
+	
 	const combined = new Date(date);
 	combined.setHours(hours, minutes, 0, 0);
 	return combined.toISOString();
@@ -160,7 +150,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 	const [startTime, setStartTime] = useState('09:00');
 	const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 	const [endTime, setEndTime] = useState('10:00');
-
+	
 	const [selectedMeetingPlatform, setSelectedMeetingPlatform] = useState<
 		'google_calendar' | 'custom'
 	>('google_calendar');
@@ -204,7 +194,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 		setEventsLoading(true);
 		setEvents([]);
 		let attempt = 0;
-		let mapped: CalendarEvent[] = [];
+		let mapped: CalendarEvent[] = []; 
 
 		while (attempt < MAX_FETCH_ATTEMPTS) {
 			try {
@@ -281,7 +271,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 
 		setEventsLoading(false);
 		return mapped;
-	}, []);
+	}, []); 
 
 	useEffect(() => {
 		if (open) {
@@ -459,7 +449,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 
 		const startISO = combineDateAndTime(startDate, startTime);
 		const endISO = combineDateAndTime(endDate, endTime);
-
+		
 		if (!startISO || !endISO) {
 			setError('Please select valid date and time.');
 			toast({
@@ -564,10 +554,7 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 					});
 					onOpenChange(false);
 				} catch (err) {
-					const errorMessage =
-						err instanceof Error
-							? err.message
-							: 'Failed to save meeting with notetaker';
+					const errorMessage = err instanceof Error ? err.message : 'Failed to save meeting with notetaker';
 					console.error('Auto-save notetaker error', err);
 					setError(errorMessage);
 					toast({
@@ -599,8 +586,8 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 			<DialogContent
 				className='max-w-md p-0 gap-0 bg-white rounded-2xl'
 				style={{ overflow: 'hidden' }}>
-				<DialogTitle className='sr-only'>Event Details</DialogTitle>
-				<DialogDescription className='sr-only'>
+				<DialogTitle className="sr-only">Event Details</DialogTitle>
+				<DialogDescription className="sr-only">
 					Create or select a meeting event with optional notetaker
 				</DialogDescription>
 				<div className='px-14 py-8'>
@@ -646,26 +633,26 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 						{/* Start Date & Time */}
 						<div className='mb-5'>
 							<DateTimePicker
-								label='Start'
+								label="Start"
 								date={startDate}
 								onDateChange={setStartDate}
 								time={startTime}
 								onTimeChange={setStartTime}
 								disabled={loading}
-								id='start-datetime'
+								id="start-datetime"
 							/>
 						</div>
 
 						{/* End Date & Time */}
 						<div className='mb-5'>
 							<DateTimePicker
-								label='End'
+								label="End"
 								date={endDate}
 								onDateChange={setEndDate}
 								time={endTime}
 								onTimeChange={setEndTime}
 								disabled={loading}
-								id='end-datetime'
+								id="end-datetime"
 							/>
 						</div>
 
@@ -708,8 +695,8 @@ const NoteTaker: FC<NoteTakerProps> = ({ open, onOpenChange }) => {
 									{!eventsLoading && events.length === 0 ? (
 										<div className='mb-3 p-3 rounded-md bg-yellow-50 border border-yellow-200'>
 											<p className='text-sm text-yellow-800'>
-												You don&apos;t have any calendar events. You can still
-												create a meeting manually below.
+												You don&apos;t have any calendar events. You can still create
+												a meeting manually below.
 											</p>
 										</div>
 									) : null}

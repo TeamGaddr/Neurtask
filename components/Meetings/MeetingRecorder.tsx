@@ -1,3 +1,8 @@
+/**
+ * eslint-disable @typescript-eslint/no-unused-vars
+ *
+ * @format
+ */
 
 'use client';
 import { Mic, MicOff } from 'lucide-react';
@@ -7,17 +12,13 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
 	const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 	const chunksRef = useRef<Blob[]>([]);
 	const [recording, setRecording] = useState(false);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [fileUrl, setFileUrl] = useState<string | null>(null);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [error, setError] = useState<string | null>(null);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [transcriptionText, setTranscriptionText] = useState('');
 	const token = localStorage.getItem('token');
 	const [micMuted, setMicMuted] = useState(false);
 	const micStreamRef = useRef<MediaStream | null>(null);
 	// const [meetingId, setMeetingId] = useState<string | null>(null)
-	const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 	async function start() {
 		try {
@@ -100,13 +101,16 @@ export default function MeetingRecorder({ meetingId }: { meetingId: string }) {
 			form.append('filename', filename);
 			form.append('meetingId', meetingId);
 
-			const res = await fetch(`${apiUrl}/api/recordmeetings/stop-recording`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-				method: 'POST',
-				body: form,
-			});
+			const res = await fetch(
+				'http://localhost:3001/api/recordmeetings/stop-recording',
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+					method: 'POST',
+					body: form,
+				}
+			);
 
 			const json = await res.json();
 			if (res.ok) {
